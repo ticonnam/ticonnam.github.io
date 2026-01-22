@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
-import Work from './components/Work'; // Strict casing to match Vercel's Linux environment
+import Projects from './components/Projects'; // Strict casing to match Vercel's Linux environment
 import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
@@ -35,7 +35,7 @@ function App() {
 
         <section id="work">
           {/* This component now handles the 90% zoom gallery and high-res UX artifacts */}
-          <Work />
+          <Projects />
         </section>
 
         <section id="about">
