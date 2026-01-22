@@ -68,21 +68,21 @@ const projects = [
     title: "YouTube Music Shuffle",
     description: "Solving the 'hidden' shuffle pain point identified through Google UX research.",
     tech: ["UX Research", "Accessibility"],
-    images: ["/youtubeshuffle.png", "/yt-music-case-study.png"],
+    images: ["/youtubeshuffle.jpg", "/yt-music-case-study.jpg"],
     gradient: "from-red-500/10"
   },
   {
     title: "Diabetic-Safe Bakery",
     description: "Designing a WCAG-compliant ordering system for inclusive commerce.",
     tech: ["UI Design", "WCAG 2.1"],
-    images: ["/diabeticbakery.png", "/diabetic-bakery-case-study.png"],
+    images: ["/diabeticbakery.jpg", "/diabetic-bakery-case-study.jpg"],
     gradient: "from-emerald-500/10"
   },
   {
     title: "Crunchyroll Redesign",
     description: "Streamlining information architecture to reduce cognitive load for anime discovery.",
     tech: ["IA", "User Testing"],
-    images: ["/crunchyroll.png", "/crunchyroll-case-study.png"],
+    images: ["/crunchyroll.jpg", "/crunchyroll-case-study.jpg"],
     gradient: "from-orange-500/10"
   }
 ];
