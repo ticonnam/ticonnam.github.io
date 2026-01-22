@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
-import Work from './components/Work';
+import Work from './components/Work'; // Strict casing to match Vercel's Linux environment
 import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
@@ -10,57 +10,47 @@ import CustomCursor from './components/CustomCursor';
 import SocialSidebar from './components/SocialSidebar';
 import RightSidebar from './components/RightSidebar';
 
-/**
- * Main Application Component
- * Managed Z-Index Hierarchy:
- * - CustomCursor: z-[9999] (Highest)
- * - Navigation & Assistant: z-[100-110]
- * - Sidebars: z-[100]
- * - Main Content: z-10
- * - Background Blobs: z-0 (Lowest)
- */
 function App() {
   return (
-    <div className="bg-[#0a0c10] min-h-screen text-white relative selection:bg-indigo-500/30 selection:text-white">
-      
-      {/* 1. Global Interactive Overlays */}
-      <CustomCursor />
-      <SocialSidebar />
-      <RightSidebar />
-      <Header />
+    <div className="relative min-h-screen bg-[#030303] text-white selection:bg-indigo-500/30 selection:text-indigo-200 overflow-x-hidden font-sans antialiased">
 
-      {/* 2. Main Scrollable Content */}
-      <main className="relative z-10 w-full overflow-x-hidden">
-        {/* Cinematic Hero Entrance */}
-        <Hero />
-        
-        {/* UX Case Studies Section */}
-        <Work />
-        
-        {/* Biography & Skills Section */}
-        <About />
-        
-        {/* High-Intent Contact Section */}
-        <Contact />
-      </main>
-
-      {/* 3. Global Signature Footer */}
-      <Footer />
-
-      {/* 4. AI Portfolio Assistant */}
-      <AIChat />
-
-      {/* 5. Fixed Background Atmospheric Elements */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* Top-Left Indigo Glow */}
-        <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] bg-indigo-600/10 blur-[120px] rounded-full" />
-        
-        {/* Bottom-Right Purple Glow */}
-        <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-purple-600/10 blur-[100px] rounded-full" />
-        
-        {/* Subtle Grain Overlay for Texture */}
+      {/* 1. Fixed Background Layers (z-0) */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[150px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[150px] rounded-full" />
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-soft-light" />
       </div>
+
+      {/* 2. Global UI Overlays (z-100+) */}
+      <CustomCursor />
+      <Header />
+      <SocialSidebar />
+      <RightSidebar />
+
+      {/* 3. Main Content Flow (z-10) */}
+      <main className="relative z-10">
+        <section id="hero">
+          <Hero />
+        </section>
+
+        <section id="work">
+          {/* This component now handles the 90% zoom gallery and high-res UX artifacts */}
+          <Work />
+        </section>
+
+        <section id="about">
+          <About />
+        </section>
+
+        <section id="contact">
+          <Contact />
+        </section>
+
+        <Footer />
+      </main>
+
+      {/* 4. AI Assistant Interface (z-150) */}
+      <AIChat />
     </div>
   );
 }
