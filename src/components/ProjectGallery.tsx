@@ -1,28 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2, Contrast } from 'lucide-react';
+import { ZoomIn, X, ChevronLeft, ChevronRight, Maximize2, Minimize2, Contrast } from 'lucide-react';
 
-interface GalleryProps {
-  images: string[];
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const ProjectGallery: React.FC<GalleryProps> = ({ images, isOpen, onClose }) => {
+// --- Sub-Component: 90% Gallery ---
+const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen: boolean, onClose: () => void }) => {
   const [index, setIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [isHighContrast, setIsHighContrast] = useState(false);
 
+  // Prevent scroll when gallery is open
   useEffect(() => {
     if (isOpen) {
-      setIndex(0);
-      setIsZoomed(false);
-      setIsHighContrast(false);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
     }
   }, [isOpen]);
 
-  const next = () => { setIndex((prev) => (prev + 1) % images.length); setIsZoomed(false); };
-  const prev = () => { setIndex((prev) => (prev - 1 + images.length) % images.length); setIsZoomed(false); };
+  const next = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIndex((prev) => (prev + 1) % images.length);
+    setIsZoomed(false);
+  };
+
+  const prev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIndex((prev) => (prev - 1 + images.length) % images.length);
+    setIsZoomed(false);
+  };
 
   return (
     <AnimatePresence>
@@ -31,88 +36,82 @@ const ProjectGallery: React.FC<GalleryProps> = ({ images, isOpen, onClose }) => 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className={`fixed inset-0 z-[300] transition-colors duration-500 flex flex-col items-center justify-center overflow-hidden ${
-            isHighContrast ? 'bg-black' : 'bg-[#0a0c10]/fb backdrop-blur-3xl'
+          // --- FIX 1: Maximize Z-Index and ensure pointer events are active ---
+          className={`fixed inset-0 z-[999] flex flex-col items-center justify-center overflow-hidden pointer-events-auto transition-colors duration-300 ${
+            isHighContrast ? 'bg-black' : 'bg-[#030303]/98 backdrop-blur-3xl'
           }`}
+          onClick={onClose} // Clicking the background closes the project
         >
-          {/* Top Interface */}
-          <div className="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-[310]">
-             <div className="flex items-center gap-6">
-                <span className="text-white/50 font-mono text-xs tracking-widest">{index + 1} / {images.length}</span>
+          {/* Gallery UI Controls */}
+          <div
+            className="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-[1000] pointer-events-auto"
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking controls
+          >
+             <div className="flex items-center gap-6 text-white/40 text-xs font-mono">
+                {index + 1} / {images.length}
+             </div>
+             <div className="flex items-center gap-4">
                 <button
                   onClick={() => setIsHighContrast(!isHighContrast)}
-                  className={`flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold transition-all ${
-                    isHighContrast ? 'text-indigo-400' : 'text-slate-500 hover:text-white'
-                  }`}
+                  className="text-indigo-400 p-3 hover:bg-white/5 rounded-full transition-all cursor-pointer"
+                  title="Toggle High Contrast"
                 >
-                  <Contrast size={14} /> {isHighContrast ? 'High Contrast: On' : 'High Contrast: Off'}
+                  <Contrast size={20} />
                 </button>
-             </div>
-
-             <div className="flex items-center gap-3">
                 <button
                   onClick={() => setIsZoomed(!isZoomed)}
-                  className="p-3 bg-white/5 hover:bg-white/10 text-indigo-400 rounded-full border border-white/10 transition-all"
-                  title="90% Scale View"
+                  className="text-indigo-400 p-3 hover:bg-white/5 rounded-full transition-all cursor-pointer"
+                  title="Toggle Zoom"
                 >
-                  {isZoomed ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+                  {isZoomed ? <Minimize2 size={24}/> : <Maximize2 size={24}/>}
                 </button>
-                <button onClick={onClose} className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-full border border-white/10">
-                  <X size={20} />
+                <button
+                  onClick={onClose}
+                  className="text-white p-3 hover:bg-red-500/20 rounded-full transition-all cursor-pointer"
+                  title="Close Gallery"
+                >
+                  <X size={28}/>
                 </button>
              </div>
           </div>
 
-          {/* Main Stage */}
-          <div className={`w-full h-full flex flex-col items-center ${isZoomed ? 'overflow-y-auto overflow-x-hidden pt-32 pb-20' : 'justify-center overflow-hidden'}`}>
+          {/* Navigation Arrows */}
+          {!isZoomed && (
+            <>
+              <button
+                onClick={prev}
+                className="absolute left-8 top-1/2 -translate-y-1/2 z-[1000] p-4 text-white/20 hover:text-white transition-all cursor-pointer"
+              >
+                <ChevronLeft size={60} strokeWidth={1} />
+              </button>
+              <button
+                onClick={next}
+                className="absolute right-8 top-1/2 -translate-y-1/2 z-[1000] p-4 text-white/20 hover:text-white transition-all cursor-pointer"
+              >
+                <ChevronRight size={60} strokeWidth={1} />
+              </button>
+            </>
+          )}
 
-            {!isZoomed && (
-              <>
-                <button onClick={prev} className="fixed left-8 top-1/2 -translate-y-1/2 p-4 text-white/20 hover:text-white transition-colors z-[310]">
-                  <ChevronLeft size={60} strokeWidth={1} />
-                </button>
-                <button onClick={next} className="fixed right-8 top-1/2 -translate-y-1/2 p-4 text-white/20 hover:text-white transition-colors z-[310]">
-                  <ChevronRight size={60} strokeWidth={1} />
-                </button>
-              </>
-            )}
-
+          {/* Main Artifact Display */}
+          <div className={`w-full h-full flex items-center justify-center ${isZoomed ? 'overflow-y-auto pt-20 cursor-zoom-out' : 'cursor-default'}`}>
             <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{
-                opacity: 1,
-                scale: isZoomed ? 0.9 : 1,
-              }}
-              transition={{ type: "spring", damping: 25, stiffness: 120 }}
-              className={`flex items-center justify-center transition-all ${isZoomed ? 'w-full' : 'max-h-[80vh] w-auto'}`}
-              onClick={() => !isZoomed && setIsZoomed(true)}
+              animate={{ scale: isZoomed ? 0.9 : 1 }}
+              transition={{ type: "spring", stiffness: 250, damping: 25 }}
+              className="transform-gpu pointer-events-none" // Image itself shouldn't block button clicks
+              onClick={(e) => e.stopPropagation()}
             >
               <img
                 src={images[index]}
-                alt="UX Research Case Study"
-                className={`rounded-xl transition-all duration-500 ${
-                  isZoomed ? 'w-[90%] md:w-[85%] cursor-zoom-out h-auto' : 'max-h-[75vh] object-contain cursor-zoom-in'
-                } ${isHighContrast ? 'shadow-[0_0_50px_rgba(255,255,255,0.05)] border border-white/10' : 'shadow-2xl shadow-black/80'}`}
+                alt="UX Artifact"
+                className={`rounded-xl shadow-2xl transition-all duration-500 ${isZoomed ? 'w-[90vw] h-auto' : 'max-h-[80vh] object-contain'}`}
               />
             </motion.div>
           </div>
-
-          {/* Bottom Indicators */}
-          {!isZoomed && (
-            <div className="absolute bottom-10 flex flex-col items-center gap-4">
-              <div className="flex gap-2">
-                {images.map((_, i) => (
-                  <button key={i} onClick={() => setIndex(i)} className={`h-1 rounded-full transition-all duration-500 ${i === index ? 'w-10 bg-indigo-500' : 'w-2 bg-white/10'}`} />
-                ))}
-              </div>
-              <p className="text-slate-600 font-mono text-[9px] uppercase tracking-[0.3em]">Artifact Reading View</p>
-            </div>
-          )}
         </motion.div>
       )}
     </AnimatePresence>
   );
 };
 
-export default ProjectGallery;
+// ... (Rest of your projects data and Projects component remain the same)
