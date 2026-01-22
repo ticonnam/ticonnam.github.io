@@ -1,46 +1,52 @@
-# Getting Started with Create React App
+Ticonna Mckinney | Junior UX Designer
+Solving complex problems through empathy, research, and inclusive design.
+🚀 The Vision
+This portfolio is a high-performance, cinematic showcase of my design philosophy: removing friction from daily lives. As a graduate of the Google UX Design Professional Certificate program, I bridge the gap between user frustrations and intuitive, beautiful solutions.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+🛠️ Technical Stack
+Framework: React 18 with TypeScript
 
-## Available Scripts
+Styling: Tailwind CSS (Custom Glassmorphism & Bento Grid)
 
-In the project directory, you can run:
+Animations: Framer Motion (Parallax tilts, staggered reveals, and spring physics)
 
-### `npm start`
+AI Integration: Google Gemini 2.5 Flash (Powered by "Aloy," my virtual portfolio assistant)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Deployment: Vercel with Continuous Integration
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+📂 Featured Case Studies
+Each project in this portfolio follows the full UX lifecycle: Empathize > Define > Ideate > Prototype > Test.
 
-### `npm test`
+1. YouTube Music Shuffle Redesign
+The Problem: Users faced high friction when trying to quickly shuffle their entire library.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The Solution: Integrated a "Shuffle All" feature directly into the library interface, increasing user control.
 
-### `npm run build`
+Impact: Streamlined the "Time to Music" metric for power users.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Diabetic-Safe Bakery (Mobile E-commerce)
+The Problem: Users with dietary restrictions (like diabetes) often struggle with unclear labeling on e-commerce platforms.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The Solution: An accessibility-first web experience featuring clear nutritional signifiers and an inclusive checkout flow.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Impact: Designed for WCAG 2.1 AA compliance to ensure inclusivity.
 
-### `npm run eject`
+3. Crunchyroll Home Redesign
+The Problem: "Scroll fatigue" caused by an overwhelming amount of non-personalized content.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The Solution: Introduced a tabbed navigation approach (Recommended, Continue Watching, New Releases) filtered by user history.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Impact: Significantly reduced cognitive load and scrolling depth.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+📜 Certifications
+UX/UI Design Mastery Certificate | UXPeak (Feb 2025)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+🤖 Meet Aloy
+Embedded in this portfolio is Aloy, a custom-trained AI assistant. Aloy can answer questions about my design process, my specific role in the projects listed above, and my availability for new roles.
 
-## Learn More
+📫 Let's Connect
+Email: ticonnam@gmail.com
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+LinkedIn: linkedin.com/in/ticonna-mckinney-8580a6263
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Portfolio: [Live Vercel Link]
