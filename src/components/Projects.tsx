@@ -92,13 +92,14 @@ const Projects = () => {
   const [selected, setSelected] = useState<null | typeof projects[0]>(null);
 
   return (
-    <div className="py-24 px-6 max-w-7xl mx-auto min-h-screen">
-      {/* Resized WORK Header */}
-      <div className="mb-20">
-        <h2 className="text-5xl md:text-6xl font-black tracking-tighter mb-4 leading-none">
-          WORK<span className="text-indigo-500">.</span>
+    <div className="py-32 px-6 max-w-7xl mx-auto min-h-screen">
+      {/* Refined "Empathy-Led" Header Section */}
+      <div className="mb-24">
+        <h2 className="text-5xl md:text-7xl font-serif tracking-tight leading-tight text-white mb-6">
+          Recent <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">W</span>ork.
         </h2>
-        <p className="text-white/40 max-w-lg text-base font-light leading-relaxed">
+        <div className="h-1 w-20 bg-indigo-500 mb-8 rounded-full" />
+        <p className="text-white/50 max-w-xl text-lg font-light leading-relaxed italic">
           Case studies built on the principles of the Google UX Design Professional Certificate.
         </p>
       </div>
