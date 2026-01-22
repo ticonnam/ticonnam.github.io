@@ -20,6 +20,7 @@ const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen:
             isHighContrast ? 'bg-black' : 'bg-[#030303]/98 backdrop-blur-3xl'
           }`}
         >
+          {/* Gallery UI Controls */}
           <div className="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-[510]">
              <div className="flex items-center gap-6">
                 <span className="text-white/40 font-mono text-xs">{index + 1} / {images.length}</span>
@@ -31,13 +32,16 @@ const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen:
                 </button>
              </div>
              <div className="flex items-center gap-4">
-                <button onClick={() => setIsZoomed(!isZoomed)} className="p-3 bg-white/5 hover:bg-white/10 text-indigo-400 rounded-full border border-white/10">
+                <button onClick={() => setIsZoomed(!isZoomed)} className="p-3 bg-white/5 hover:bg-white/10 text-indigo-400 rounded-full border border-white/10 transition-all">
                   {isZoomed ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
                 </button>
-                <button onClick={onClose} className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-full border border-white/10"><X size={20} /></button>
+                <button onClick={onClose} className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-full border border-white/10">
+                  <X size={20} />
+                </button>
              </div>
           </div>
 
+          {/* Main Artifact Display */}
           <div className={`w-full h-full flex flex-col items-center ${isZoomed ? 'overflow-y-auto pt-32 pb-20' : 'justify-center'}`}>
             {!isZoomed && (
               <>
@@ -58,74 +62,75 @@ const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen:
   );
 };
 
-// --- Project Data ---
+// --- Project Data Array ---
 const projects = [
   {
     title: "YouTube Music Shuffle",
-    tagline: "Accessibility & User Control",
-    description: "Redesigning the library interface to solve the 'hidden' shuffle-all pain point identified through user research.",
+    description: "Solving the 'hidden' shuffle pain point identified through Google UX research.",
     tech: ["UX Research", "Accessibility"],
-    images: ["/youtubeshuffle.jpg", "/yt-music-case-study.jpg"],
-    gradient: "from-red-500/20 to-transparent"
+    images: ["/youtubeshuffle.png", "/yt-music-case-study.png"],
+    gradient: "from-red-500/10"
   },
   {
     title: "Diabetic-Safe Bakery",
-    tagline: "Inclusive E-Commerce",
-    description: "Designing a WCAG-compliant ordering system focused on users with specialized dietary needs.",
+    description: "Designing a WCAG-compliant ordering system for inclusive commerce.",
     tech: ["UI Design", "WCAG 2.1"],
-    images: ["/diabeticbakery.jpg", "/diabetic-bakery-case-study.jpg"],
-    gradient: "from-emerald-500/20 to-transparent"
+    images: ["/diabeticbakery.png", "/diabetic-bakery-case-study.png"],
+    gradient: "from-emerald-500/10"
   },
   {
     title: "Crunchyroll Redesign",
-    tagline: "Personalized Discovery",
-    description: "Streamlining the home-to-playback journey to eliminate irrelevant content and reduce scroll fatigue.",
-    tech: ["Information Architecture", "Figma"],
-    images: ["/crunchyroll.jpg", "/crunchyroll-case-study.jpg"],
-    gradient: "from-orange-500/20 to-transparent"
+    description: "Streamlining information architecture to reduce cognitive load for anime discovery.",
+    tech: ["IA", "User Testing"],
+    images: ["/crunchyroll.png", "/crunchyroll-case-study.png"],
+    gradient: "from-orange-500/10"
   }
 ];
 
+// --- Main Projects Component ---
 const Projects = () => {
   const [selected, setSelected] = useState<null | typeof projects[0]>(null);
 
   return (
-    <div className="py-32 px-6 max-w-7xl mx-auto min-h-screen">
-      <div className="mb-24">
-        <h2 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 leading-none">WORK<span className="text-indigo-500">.</span></h2>
-        <p className="text-white/40 max-w-xl text-lg font-light leading-relaxed">
+    <div className="py-24 px-6 max-w-7xl mx-auto min-h-screen">
+      {/* Resized WORK Header */}
+      <div className="mb-20">
+        <h2 className="text-5xl md:text-6xl font-black tracking-tighter mb-4 leading-none">
+          WORK<span className="text-indigo-500">.</span>
+        </h2>
+        <p className="text-white/40 max-w-lg text-base font-light leading-relaxed">
           Case studies built on the principles of the Google UX Design Professional Certificate.
         </p>
       </div>
 
+      {/* 3-Column Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {projects.map((project, i) => (
           <motion.div
             key={i}
-            whileHover={{ y: -10 }}
-            className={`group relative bg-white/5 border border-white/5 rounded-[2.5rem] p-8 overflow-hidden`}
+            whileHover={{ y: -8 }}
+            className="group relative bg-white/5 border border-white/5 rounded-[2.5rem] p-8 overflow-hidden hover:bg-white/[0.07] transition-all duration-500"
           >
-            <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
+            <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
 
-            <div className="mb-8 aspect-video rounded-2xl bg-slate-900 overflow-hidden relative z-10">
+            <div className="mb-8 aspect-[4/3] rounded-2xl bg-slate-900 overflow-hidden relative z-10">
               <img src={project.images[0]} alt={project.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700" />
               <button
                 onClick={() => setSelected(project)}
                 className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-all"
               >
-                <div className="bg-white text-black px-6 py-3 rounded-full flex items-center gap-2 font-bold text-xs uppercase tracking-widest">
+                <div className="bg-white text-black px-6 py-3 rounded-full flex items-center gap-2 font-bold text-xs uppercase tracking-widest shadow-xl">
                   <ZoomIn size={16} /> View Study
                 </div>
               </button>
             </div>
 
             <div className="relative z-10">
-              <p className="text-indigo-400 text-[10px] uppercase tracking-[0.3em] font-bold mb-2">{project.tagline}</p>
-              <h3 className="text-3xl font-bold mb-4">{project.title}</h3>
-              <p className="text-white/40 text-sm mb-8 font-light line-clamp-3">{project.description}</p>
+              <h3 className="text-2xl font-bold mb-3">{project.title}</h3>
+              <p className="text-white/40 text-sm mb-6 font-light leading-relaxed">{project.description}</p>
               <div className="flex flex-wrap gap-2">
                 {project.tech.map(t => (
-                  <span key={t} className="px-3 py-1 bg-white/5 rounded-full text-[9px] font-bold text-white/60 uppercase tracking-tighter border border-white/10">{t}</span>
+                  <span key={t} className="px-3 py-1 bg-white/5 rounded-full text-[9px] font-bold text-indigo-400 uppercase tracking-tighter border border-white/10">{t}</span>
                 ))}
               </div>
             </div>
