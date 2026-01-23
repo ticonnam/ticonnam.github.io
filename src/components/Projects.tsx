@@ -1,100 +1,109 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, ChevronUp, ExternalLink, ZoomIn } from 'lucide-react';
+
+const projects = [
+  {
+    title: "YouTube Music Shuffle",
+    description: "Improving accessibility for the offline shuffle feature.",
+    images: ["/youtube_shuffle_all.jpg", "/youtube_shuffle_all_casestudy.png"],
+    tech: ["UX Research", "Accessibility"]
+  },
+  {
+    title: "Diabetic-Safe Bakery",
+    description: "Designing an end-to-end accessible ordering system.",
+    images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"],
+    tech: ["UI Design", "WCAG 2.1"]
+  },
+  {
+    title: "Crunchyroll Redesign",
+    description: "Streamlining discovery to reduce cognitive load.",
+    images: ["/crunchyroll_redesign.png", "/crunchyroll_redesign_casestudy.jpg"],
+    tech: ["IA", "User Testing"]
+  }
+];
 
 const Projects = () => {
-  const [selectedProject, setSelectedProject] = useState<any>(null);
-  const [index, setIndex] = useState(0);
-  const [isZoomed, setIsZoomed] = useState(false);
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
-  const projects = [
-    { title: "YouTube Music Shuffle", images: ["/youtube_shuffle_all.jpg", "/youtube_shuffle_all_casestudy.png"], tech: ["UX Research", "Accessibility"] },
-    { title: "Diabetic-Safe Bakery", images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"], tech: ["UI Design", "WCAG 2.1"] },
-    { title: "Crunchyroll Redesign", images: ["/crunchyroll_redesign.png", "/crunchyroll_redesign_casestudy.jpg"], tech: ["IA", "Research"] }
-  ];
-
-  const openGallery = (p: any) => {
-    setSelectedProject(p);
-    setIndex(0);
-    setIsZoomed(false);
-    dialogRef.current?.showModal(); // Browser-native modal trigger
-  };
-
-  const closeGallery = () => {
-    dialogRef.current?.close();
-    setSelectedProject(null);
+  const toggleProject = (index: number) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
   };
 
   return (
-    <div className="py-24 px-6 max-w-6xl mx-auto min-h-screen">
-      <h2 className="text-4xl md:text-5xl font-serif text-white mb-16 italic">Case Studies.</h2>
+    <div className="py-24 px-6 max-w-5xl mx-auto min-h-screen">
+      <div className="mb-16">
+        <h2 className="text-4xl md:text-5xl font-serif text-white italic">Case Studies.</h2>
+        <p className="text-white/40 text-sm mt-4">Click a project to explore the full research and artifacts.</p>
+      </div>
 
-      {/* Project Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="space-y-6">
         {projects.map((p, i) => (
           <div
             key={i}
-            onClick={() => openGallery(p)}
-            className="group cursor-pointer bg-white/[0.03] border border-white/5 p-6 rounded-[2rem] hover:bg-white/[0.07] transition-all duration-300"
+            className={`border border-white/10 rounded-3xl overflow-hidden transition-all duration-500 ${
+              expandedIndex === i ? 'bg-white/[0.05] border-indigo-500/30' : 'bg-white/[0.02] hover:bg-white/[0.04]'
+            }`}
           >
-            <div className="aspect-video rounded-xl overflow-hidden bg-slate-900 border border-white/5 mb-6">
-                <img
-                  src={p.images[0]}
-                  loading="lazy"
-                  className="w-full h-full object-cover opacity-50 group-hover:opacity-100 transition-all duration-500 transform-gpu"
-                />
-            </div>
-            <h3 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">{p.title}</h3>
-            <div className="flex gap-2 mt-3">
-              {p.tech.map(t => <span key={t} className="text-[9px] uppercase tracking-tighter text-indigo-400 font-bold border border-indigo-500/10 px-2 py-0.5 rounded-full">{t}</span>)}
-            </div>
+            {/* Clickable Header */}
+            <button
+              onClick={() => toggleProject(i)}
+              className="w-full flex items-center justify-between p-8 text-left"
+            >
+              <div className="flex items-center gap-6">
+                <span className="text-indigo-500 font-mono text-xs">0{i + 1}</span>
+                <h3 className="text-xl md:text-2xl font-bold text-white">{p.title}</h3>
+                <div className="hidden md:flex gap-2">
+                  {p.tech.map(t => (
+                    <span key={t} className="text-[9px] uppercase tracking-tighter text-white/30 border border-white/10 px-2 py-0.5 rounded-full">{t}</span>
+                  ))}
+                </div>
+              </div>
+              <div className={`p-2 rounded-full bg-white/5 transition-transform duration-300 ${expandedIndex === i ? 'rotate-180 text-indigo-400' : 'text-white/20'}`}>
+                <ChevronDown size={20} />
+              </div>
+            </button>
+
+            {/* Dropdown Content */}
+            <AnimatePresence>
+              {expandedIndex === i && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                >
+                  <div className="px-8 pb-12 space-y-8 border-t border-white/5 pt-8">
+                    <p className="text-white/60 text-lg font-light leading-relaxed max-w-2xl">
+                      {p.description}
+                    </p>
+
+                    {/* Horizontal Artifact Scroll */}
+                    <div className="flex gap-6 overflow-x-auto pb-6 custom-scrollbar">
+                      {p.images.map((img, imgIdx) => (
+                        <div key={imgIdx} className="min-w-[300px] md:min-w-[600px] aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-white/5 shadow-2xl">
+                          <img
+                            src={img}
+                            alt={`${p.title} artifact ${imgIdx + 1}`}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                            loading="lazy"
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex justify-end">
+                       <button className="flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-widest hover:text-white transition-colors">
+                          Download PDF Case Study <ExternalLink size={14} />
+                       </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         ))}
       </div>
-
-      {/* Browser-Native Modal (Kills Interaction Lag) */}
-      <dialog
-        ref={dialogRef}
-        className="backdrop:bg-black/95 bg-transparent p-0 m-0 w-full h-full max-w-none max-h-none border-none outline-none overflow-hidden"
-        onClose={() => setSelectedProject(null)}
-      >
-        {selectedProject && (
-          <div className="w-full h-full flex items-center justify-center p-4 md:p-10">
-            <div className="relative w-full max-w-5xl h-full bg-[#050505] rounded-3xl border border-white/10 flex flex-col shadow-2xl overflow-hidden">
-
-              {/* Header Controls */}
-              <div className="p-4 flex justify-between items-center border-b border-white/5 bg-black/40">
-                <span className="text-white/40 font-mono text-[10px] uppercase tracking-widest">{index + 1} / {selectedProject.images.length}</span>
-                <div className="flex items-center gap-3">
-                  <button onClick={() => setIsZoomed(!isZoomed)} className="text-indigo-400 p-2">{isZoomed ? <Minimize2 size={18}/> : <Maximize2 size={18}/>}</button>
-                  <button onClick={closeGallery} className="p-2 bg-white/5 rounded-full hover:bg-red-500/20 text-white transition-all"><X size={18}/></button>
-                </div>
-              </div>
-
-              {/* Viewer Area */}
-              <div className={`flex-1 overflow-y-auto p-4 md:p-10 flex flex-col items-center ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}>
-                <img
-                  src={selectedProject.images[index]}
-                  className={`rounded-lg transition-transform duration-300 shadow-2xl ${isZoomed ? 'w-full scale-110' : 'max-h-[70vh] object-contain'}`}
-                  style={{ willChange: 'transform' }}
-                  onClick={() => setIsZoomed(!isZoomed)}
-                />
-
-                {selectedProject.images.length > 1 && (
-                  <div className="flex gap-10 py-10 mt-auto">
-                    <button onClick={() => setIndex((prev) => (prev - 1 + selectedProject.images.length) % selectedProject.images.length)} className="text-white/30 hover:text-white flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
-                      <ChevronLeft size={16}/> Prev
-                    </button>
-                    <button onClick={() => setIndex((prev) => (prev + 1) % selectedProject.images.length)} className="text-indigo-400 hover:text-indigo-300 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
-                      Next <ChevronRight size={16}/>
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </dialog>
     </div>
   );
 };
