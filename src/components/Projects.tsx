@@ -79,6 +79,7 @@ export default function Projects() {
               onClick={() => setZoom({ projectIdx: i, imgIdx: 0 })}
               className="relative w-full aspect-video overflow-hidden group"
               aria-label={`Open ${p.title} case study`}
+              type="button"
             >
               <img
                 src={p.images[0]}
@@ -96,6 +97,7 @@ export default function Projects() {
               <button
                 onClick={() => setOpen(open === i ? null : i)}
                 className="flex items-center gap-2 text-indigo-400 text-sm font-semibold"
+                type="button"
               >
                 View Case Study <ChevronDown />
               </button>
@@ -127,6 +129,7 @@ export default function Projects() {
                         onClick={() => setZoom({ projectIdx: i, imgIdx: idx })}
                         className="relative w-28 h-16 rounded-lg overflow-hidden border border-white/10"
                         aria-label={`Open artifact ${idx + 1}`}
+                        type="button"
                       >
                         <img
                           src={img}
@@ -151,7 +154,7 @@ export default function Projects() {
   );
 }
 
-/* ---------------- ZOOM MODAL (REAL ZOOM + PAN) ---------------- */
+/* ---------------- ZOOM MODAL (REAL ZOOM + PAN + WORKING BUTTONS) ---------------- */
 
 function ZoomModal({
   zoom,
@@ -160,27 +163,26 @@ function ZoomModal({
   zoom: ZoomState | null;
   setZoom: (v: ZoomState | null) => void;
 }) {
-  const [scale, setScale] = useState(1);
+  const DEFAULT_SCALE = 1.85; // ✅ “zoom in around 85%”
+  const [scale, setScale] = useState(DEFAULT_SCALE);
   const [pos, setPos] = useState({ x: 0, y: 0 });
 
   // Reset when modal opens or image changes
   useEffect(() => {
     if (!zoom) return;
-    setScale(1);
+    setScale(DEFAULT_SCALE);
     setPos({ x: 0, y: 0 });
   }, [zoom?.projectIdx, zoom?.imgIdx]);
 
   if (!zoom) return null;
 
   const imgs = projects[zoom.projectIdx].images;
-
   const clamp = (v: number) => Math.min(Math.max(v, 1), 4);
 
   const zoomIn = () => setScale((s) => clamp(Number((s + 0.25).toFixed(2))));
-  const zoomOut = () =>
-    setScale((s) => clamp(Number((s - 0.25).toFixed(2))));
+  const zoomOut = () => setScale((s) => clamp(Number((s - 0.25).toFixed(2))));
   const reset = () => {
-    setScale(1);
+    setScale(DEFAULT_SCALE);
     setPos({ x: 0, y: 0 });
   };
 
@@ -188,7 +190,7 @@ function ZoomModal({
     e.preventDefault();
     const next = clamp(Number((scale - e.deltaY * 0.001).toFixed(2)));
     setScale(next);
-    if (next === 1) setPos({ x: 0, y: 0 });
+    if (next <= 1) setPos({ x: 0, y: 0 });
   };
 
   const goPrev = () =>
@@ -211,27 +213,31 @@ function ZoomModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        {/* Overlay */}
-        <div className="absolute inset-0" onClick={() => setZoom(null)} />
-
-        {/* Content */}
+        {/* ✅ Overlay is explicitly BELOW the UI */}
         <div
-          className="relative z-10 w-[92vw] h-[92vh] flex items-center justify-center"
+          className="absolute inset-0 z-0"
+          onClick={() => setZoom(null)}
+        />
+
+        {/* ✅ UI/content is ABOVE overlay and can receive clicks */}
+        <div
+          className="relative z-10 w-[92vw] h-[92vh] flex items-center justify-center pointer-events-auto"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Top bar */}
-          <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between">
-            <div className="text-white/50 text-xs font-mono">
+          {/* ✅ Top bar - fully clickable */}
+          <div className="absolute top-4 left-4 right-4 z-30 flex items-center justify-between pointer-events-auto">
+            <div className="text-white/60 text-xs font-mono">
               Zoom: {Math.round(scale * 100)}%
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 pointer-events-auto">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   zoomOut();
                 }}
-                className="px-3 py-2 rounded-lg bg-white/5 text-white/70 hover:text-white hover:bg-white/10"
+                className="px-3 py-2 rounded-lg bg-white/5 text-white/80 hover:text-white hover:bg-white/10"
+                type="button"
               >
                 −
               </button>
@@ -240,7 +246,8 @@ function ZoomModal({
                   e.stopPropagation();
                   zoomIn();
                 }}
-                className="px-3 py-2 rounded-lg bg-white/5 text-white/70 hover:text-white hover:bg-white/10"
+                className="px-3 py-2 rounded-lg bg-white/5 text-white/80 hover:text-white hover:bg-white/10"
+                type="button"
               >
                 +
               </button>
@@ -249,7 +256,8 @@ function ZoomModal({
                   e.stopPropagation();
                   reset();
                 }}
-                className="px-3 py-2 rounded-lg bg-white/5 text-white/70 hover:text-white hover:bg-white/10"
+                className="px-3 py-2 rounded-lg bg-white/5 text-white/80 hover:text-white hover:bg-white/10"
+                type="button"
               >
                 Reset
               </button>
@@ -258,22 +266,24 @@ function ZoomModal({
                   e.stopPropagation();
                   setZoom(null);
                 }}
-                className="px-3 py-2 rounded-lg bg-white/5 text-white/70 hover:text-white hover:bg-white/10"
+                className="px-3 py-2 rounded-lg bg-white/5 text-white/80 hover:text-white hover:bg-white/10"
                 aria-label="Close"
+                type="button"
               >
                 <X size={18} />
               </button>
             </div>
           </div>
 
-          {/* Arrows */}
+          {/* ✅ Arrows */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               goPrev();
             }}
-            className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-20 text-white/30 hover:text-white px-3 py-3"
+            className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-20 text-white/30 hover:text-white px-3 py-3 pointer-events-auto"
             aria-label="Previous"
+            type="button"
           >
             <ChevronLeft size={52} />
           </button>
@@ -283,15 +293,16 @@ function ZoomModal({
               e.stopPropagation();
               goNext();
             }}
-            className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-20 text-white/30 hover:text-white px-3 py-3"
+            className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-20 text-white/30 hover:text-white px-3 py-3 pointer-events-auto"
             aria-label="Next"
+            type="button"
           >
             <ChevronRight size={52} />
           </button>
 
           {/* Viewport */}
           <div
-            className="w-full h-full flex items-center justify-center overflow-hidden"
+            className="w-full h-full flex items-center justify-center overflow-hidden z-10"
             onWheel={handleWheel}
           >
             <motion.img
@@ -299,7 +310,7 @@ function ZoomModal({
               src={imgs[zoom.imgIdx]}
               alt="Case study"
               draggable={false}
-              className="select-none max-w-none max-h-none rounded-2xl shadow-2xl"
+              className="select-none max-w-none max-h-none rounded-2xl shadow-2xl pointer-events-auto"
               style={{
                 transform: `translate3d(${pos.x}px, ${pos.y}px, 0) scale(${scale})`,
                 cursor: scale > 1 ? "grab" : "zoom-in",
@@ -327,14 +338,13 @@ function ZoomModal({
                 window.addEventListener("mouseup", onUp);
               }}
               onDoubleClick={() => {
-                if (scale === 1) setScale(2);
+                if (scale <= 1.05) setScale(DEFAULT_SCALE);
                 else reset();
               }}
             />
           </div>
 
-          {/* Hint */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/30 text-[10px] font-mono z-20">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/30 text-[10px] font-mono z-30 pointer-events-none">
             Wheel to zoom • Drag to pan • Double-click to toggle zoom
           </div>
         </div>
