@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ZoomIn, X, ChevronLeft, ChevronRight, Maximize2, Minimize2, Contrast } from 'lucide-react';
 
-// --- Optimized Project Gallery ---
+// --- Performance-Optimized Project Gallery ---
 const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen: boolean, onClose: () => void }) => {
   const [index, setIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -15,51 +15,37 @@ const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen:
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          // PERF FIX: Removed backdrop-blur-3xl which was causing the 224ms INP hang.
-          // Using a high-performance semi-transparent solid background instead.
-          className={`fixed inset-0 z-[500] flex flex-col items-center justify-center overflow-hidden transition-colors duration-200 ${
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          // PERF: Using a high-performance background instead of heavy backdrop-blur to fix the 224ms lag.
+          className={`fixed inset-0 z-[500] flex flex-col items-center justify-center overflow-hidden transition-colors ${
             isHighContrast ? 'bg-black' : 'bg-[#030303]/fb' 
           }`}
-          style={{ transform: 'translateZ(0)' }} // Hardware Acceleration
+          style={{ transform: 'translateZ(0)' }}
         >
-          {/* Controls Bar */}
           <div className="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-[510]">
-             <div className="flex items-center gap-6 text-white/40 text-xs font-mono">
-                {index + 1} / {images.length}
-             </div>
+             <div className="flex items-center gap-6 text-white/40 text-xs font-mono">{index + 1} / {images.length}</div>
              <div className="flex items-center gap-4">
-                <button onClick={() => setIsHighContrast(!isHighContrast)} className="text-indigo-400 p-2 hover:scale-110 transition-transform">
-                  <Contrast size={18} />
-                </button>
-                <button onClick={() => setIsZoomed(!isZoomed)} className="text-indigo-400 p-2 hover:scale-110 transition-transform">
-                  {isZoomed ? <Minimize2 size={22}/> : <Maximize2 size={22}/>}
-                </button>
-                <button onClick={onClose} className="text-white p-2 hover:bg-white/10 rounded-full transition-colors">
-                  <X size={24}/>
-                </button>
+                <button onClick={() => setIsHighContrast(!isHighContrast)} className="text-indigo-400 p-2 hover:scale-110 transition-transform"><Contrast size={18} /></button>
+                <button onClick={() => setIsZoomed(!isZoomed)} className="text-indigo-400 p-2 hover:scale-110 transition-transform">{isZoomed ? <Minimize2 size={22}/> : <Maximize2 size={22}/>}</button>
+                <button onClick={onClose} className="text-white p-2 hover:bg-white/10 rounded-full transition-colors"><X size={24}/></button>
              </div>
           </div>
 
-          {/* Artifact Viewer */}
           <div className={`w-full h-full flex items-center justify-center ${isZoomed ? 'overflow-y-auto pt-20' : ''}`}>
             {!isZoomed && (
               <>
-                <button onClick={prev} className="fixed left-8 top-1/2 -translate-y-1/2 p-4 text-white/20 hover:text-white transition-colors z-[510]"><ChevronLeft size={60} strokeWidth={1} /></button>
-                <button onClick={next} className="fixed right-8 top-1/2 -translate-y-1/2 p-4 text-white/20 hover:text-white transition-colors z-[510]"><ChevronRight size={60} strokeWidth={1} /></button>
+                <button onClick={prev} className="fixed left-8 top-1/2 -translate-y-1/2 p-4 text-white/20 hover:text-white z-[510]"><ChevronLeft size={60} strokeWidth={1} /></button>
+                <button onClick={next} className="fixed right-8 top-1/2 -translate-y-1/2 p-4 text-white/20 hover:text-white z-[510]"><ChevronRight size={60} strokeWidth={1} /></button>
               </>
             )}
             <motion.div
-              // PERF FIX: Using easeOut duration instead of spring for immediate "Next Paint"
               animate={{ scale: isZoomed ? 0.9 : 1 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              transition={{ duration: 0.2, ease: "easeOut" }} // Fast transition for better INP
               className="will-change-transform flex items-center justify-center"
             >
               <img
                 src={images[index]}
-                alt="Case Study Detail"
+                alt="UX Case Study Detail"
                 className={`rounded-xl shadow-2xl transition-all ${isZoomed ? 'w-[90vw] h-auto cursor-zoom-out' : 'max-h-[80vh] object-contain cursor-zoom-in'}`}
               />
             </motion.div>
@@ -70,23 +56,24 @@ const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen:
   );
 };
 
+// --- Updated Project Data with New Image Filenames ---
 const projects = [
   {
     title: "YouTube Music Shuffle",
     description: "Improving accessibility for the offline shuffle feature.",
-    images: ["/youtubeshuffle.jpg", "/yt-music-case-study.jpg"],
+    images: ["/youtube_shuffle_all.jpg", "/youtube_shuffle_all_casestudy.png"], // Matches your new small files
     tech: ["UX Research", "Accessibility"]
   },
   {
     title: "Diabetic-Safe Bakery",
     description: "Designing an end-to-end accessible ordering system.",
-    images: ["/diabeticbakery.jpg", "/diabetic-bakery-case-study.jpg"],
+    images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"], // Matches your new small files
     tech: ["UI Design", "WCAG 2.1"]
   },
   {
     title: "Crunchyroll Redesign",
     description: "Streamlining discovery to reduce cognitive load.",
-    images: ["/crunchyroll.jpg", "/crunchyroll-case-study.jpg"],
+    images: ["/crunchyroll_redesign.png", "/crunchyroll_redesign_casestudy.jpg"], // Matches your new names
     tech: ["IA", "User Testing"]
   }
 ];
@@ -113,13 +100,13 @@ const Projects = () => {
             onClick={() => setSelected(p)}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true }} // PERF: Only animate once to reduce scroll lag
             className="cursor-pointer group relative bg-white/5 p-8 rounded-[2.5rem] border border-white/5 hover:bg-white/[0.08] transition-all duration-500 will-change-transform"
           >
             <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-8 bg-slate-900">
                 <img
                   src={p.images[0]}
-                  loading="lazy"
+                  loading="lazy" // PERF: Lazy load project thumbnails
                   alt={p.title}
                   className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700"
                 />
