@@ -1,76 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import { ZoomIn, X, ChevronLeft, ChevronRight, Maximize2, Minimize2, Contrast } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
 
-// --- Optimized Gallery: Compositor-Only Layering ---
 const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen: boolean, onClose: () => void }) => {
   const [index, setIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
-  const [isHighContrast, setIsHighContrast] = useState(false);
 
-  // Keyboard Support: Accessible & Fast
+  // Keyboard support for professional navigation
   useEffect(() => {
     if (!isOpen) return;
     const handleNav = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      if (!isZoomed) {
-        if (e.key === 'ArrowRight') setIndex((prev) => (prev + 1) % images.length);
-        if (e.key === 'ArrowLeft') setIndex((prev) => (prev - 1 + images.length) % images.length);
-      }
+      if (e.key === 'ArrowRight') setIndex((prev) => (prev + 1) % images.length);
+      if (e.key === 'ArrowLeft') setIndex((prev) => (prev - 1 + images.length) % images.length);
     };
     window.addEventListener('keydown', handleNav);
     return () => window.removeEventListener('keydown', handleNav);
-  }, [isOpen, images.length, isZoomed, onClose]);
+  }, [isOpen, images.length, onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div
-      className={`fixed inset-0 z-[999] flex flex-col items-center justify-center transition-opacity duration-300 ${
-        isHighContrast ? 'bg-black' : 'bg-black/95'
-      }`}
-      style={{ transform: 'translateZ(0)' }} // Forces Compositor Layer
-    >
-      {/* UI Controls - Higher Z-Index */}
-      <div className="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-[1010]">
-        <div className="text-white/40 font-mono text-xs">{index + 1} / {images.length}</div>
+    <div className="fixed inset-0 z-[999] bg-black/95 flex flex-col items-center justify-center animate-in fade-in duration-200">
+      {/* Sleek Minimal Header */}
+      <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-[1010]">
+        <span className="text-white/40 font-mono text-xs uppercase tracking-widest">{index + 1} / {images.length}</span>
         <div className="flex gap-4">
-          <button onClick={() => setIsHighContrast(!isHighContrast)} className="text-indigo-400 p-2"><Contrast size={20} /></button>
-          <button onClick={() => setIsZoomed(!isZoomed)} className="text-indigo-400 p-2">{isZoomed ? <Minimize2 size={24}/> : <Maximize2 size={24}/>}</button>
-          <button onClick={onClose} className="text-white hover:bg-white/10 p-2 rounded-full transition-colors"><X size={28}/></button>
+          <button onClick={() => setIsZoomed(!isZoomed)} className="text-indigo-400 hover:text-white transition-colors">
+            {isZoomed ? <Minimize2 size={20}/> : <Maximize2 size={20}/>}
+          </button>
+          <button onClick={onClose} className="text-white/60 hover:text-white transition-colors">
+            <X size={24}/>
+          </button>
         </div>
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Navigation - Hidden on Zoom */}
       {!isZoomed && images.length > 1 && (
         <>
-          <button
-            onClick={(e) => { e.stopPropagation(); setIndex((prev) => (prev - 1 + images.length) % images.length); }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-4 text-white/20 hover:text-white z-[1010] transition-colors"
-          >
-            <ChevronLeft size={60} strokeWidth={1} />
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); setIndex((prev) => (prev + 1) % images.length); }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-4 text-white/20 hover:text-white z-[1010] transition-colors"
-          >
-            <ChevronRight size={60} strokeWidth={1} />
-          </button>
+          <button onClick={() => setIndex((prev) => (prev - 1 + images.length) % images.length)} className="absolute left-4 p-4 text-white/20 hover:text-white z-[1010] transition-colors"><ChevronLeft size={48} strokeWidth={1} /></button>
+          <button onClick={() => setIndex((prev) => (prev + 1) % images.length)} className="absolute right-4 p-4 text-white/20 hover:text-white z-[1010] transition-colors"><ChevronRight size={48} strokeWidth={1} /></button>
         </>
       )}
 
-      {/* Hardware-Accelerated Artifact Viewer */}
-      <div
-        className={`w-full h-full flex items-center justify-center overflow-auto p-4 ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+      {/* Hardware-Accelerated Viewer */}
+      <div 
+        className={`w-full h-full flex items-center justify-center p-4 transition-transform duration-300 ${isZoomed ? 'overflow-auto cursor-zoom-out' : 'cursor-zoom-in'}`}
         onClick={() => setIsZoomed(!isZoomed)}
+        style={{ transform: 'translateZ(0)' }} 
       >
-        <img
-          key={`${index}-${isZoomed}`}
-          src={images[index]}
-          alt="UX Research Artifact"
-          className={`rounded-lg shadow-2xl transition-all duration-300 ease-out will-change-transform ${
+        <img 
+          key={images[index]}
+          src={images[index]} 
+          alt="Case Study Detail"
+          className={`rounded shadow-2xl transition-all duration-300 ease-out ${
             isZoomed ? 'min-w-[110%] h-auto' : 'max-h-[85vh] max-w-[90vw] object-contain'
           }`}
-          style={{ transform: 'translateZ(0)' }}
+          style={{ willChange: 'transform' }}
         />
       </div>
     </div>
@@ -78,23 +63,23 @@ const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen:
 };
 
 const projects = [
-  {
-    title: "YouTube Music Shuffle",
-    description: "Improving accessibility for the offline shuffle feature.",
-    images: ["/youtube_shuffle_all.jpg", "/youtube_shuffle_all_casestudy.png"],
-    tech: ["UX Research", "Accessibility"]
+  { 
+    title: "YouTube Music Shuffle", 
+    description: "Accessibility optimization for the offline shuffle feature.", 
+    images: ["/youtube_shuffle_all.jpg", "/youtube_shuffle_all_casestudy.png"], 
+    tech: ["UX Research", "Accessibility"] 
   },
-  {
-    title: "Diabetic-Safe Bakery",
-    description: "Designing an end-to-end accessible ordering system.",
-    images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"],
-    tech: ["UI Design", "WCAG 2.1"]
+  { 
+    title: "Diabetic-Safe Bakery", 
+    description: "End-to-end accessible commerce platform.", 
+    images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"], 
+    tech: ["UI Design", "WCAG 2.1"] 
   },
-  {
-    title: "Crunchyroll Redesign",
-    description: "Streamlining discovery to reduce cognitive load.",
-    images: ["/crunchyroll_redesign.png", "/crunchyroll_redesign_casestudy.jpg"],
-    tech: ["IA", "User Testing"]
+  { 
+    title: "Crunchyroll Redesign", 
+    description: "Information architecture to reduce cognitive load.", 
+    images: ["/crunchyroll_redesign.png", "/crunchyroll_redesign_casestudy.jpg"], 
+    tech: ["IA", "User Testing"] 
   }
 ];
 
@@ -102,46 +87,32 @@ const Projects = () => {
   const [selected, setSelected] = useState<null | any>(null);
 
   return (
-    <div className="py-32 px-6 max-w-7xl mx-auto min-h-screen">
-      <div className="mb-24">
-        <h2 className="text-5xl md:text-7xl font-serif tracking-tight text-white mb-6">
-          Recent <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">W</span>ork.
-        </h2>
-        <div className="h-1 w-20 bg-indigo-500 mb-8 rounded-full" />
-        <p className="text-white/50 text-lg font-light italic">
-          Case studies built on the principles of the Google UX Design Professional Certificate.
+    <div className="py-24 px-6 max-w-6xl mx-auto min-h-screen">
+      <div className="mb-20">
+        <h2 className="text-4xl md:text-6xl font-serif text-white mb-4">Case Studies.</h2>
+        <p className="text-white/40 text-lg font-light max-w-lg leading-relaxed">
+          Applied UX methodology focused on accessibility and user empathy.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
         {projects.map((p, i) => (
-          <div
-            key={i}
-            className="group relative bg-white/5 p-8 rounded-[2.5rem] border border-white/5 hover:bg-white/[0.08] transition-all duration-500 transform-gpu will-change-transform"
+          <div 
+            key={i} 
+            onClick={() => setSelected(p)}
+            className="group cursor-pointer space-y-6"
           >
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-8 bg-slate-900 relative">
-                {/* INP FIX: will-change and transform-gpu prevent Main Thread blocking during hover */}
-                <img
-                  src={p.images[0]}
+            <div className="aspect-[4/3] rounded-xl overflow-hidden bg-slate-900 border border-white/5 transition-all duration-500 group-hover:border-indigo-500/30">
+                <img 
+                  src={p.images[0]} 
                   loading="lazy"
                   alt={p.title}
-                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700 transform-gpu will-change-[opacity,transform]"
+                  className="w-full h-full object-cover opacity-50 group-hover:opacity-100 transition-all duration-700 scale-100 group-hover:scale-105" 
                 />
-
-                {/* Dedicated Interaction Layer */}
-                <button
-                  onClick={(e) => { e.stopPropagation(); setSelected(p); }}
-                  className="absolute inset-0 z-20 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  <div className="bg-white text-black px-6 py-3 rounded-full flex items-center gap-2 font-bold text-xs uppercase tracking-widest shadow-xl pointer-events-none">
-                    <ZoomIn size={16} /> View Study
-                  </div>
-                </button>
             </div>
-
-            <h3 className="text-2xl font-bold mb-3">{p.title}</h3>
-            <div className="flex gap-2 flex-wrap">
-                {p.tech.map(t => <span key={t} className="text-[10px] uppercase tracking-tighter text-indigo-400 font-bold border border-white/10 px-3 py-1 rounded-full">{t}</span>)}
+            <div>
+              <h3 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">{p.title}</h3>
+              <p className="text-white/40 text-sm font-light mt-2 leading-relaxed">{p.description}</p>
             </div>
           </div>
         ))}
