@@ -1,52 +1,108 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ZoomIn, X, ChevronLeft, ChevronRight, Maximize2, Minimize2, Contrast } from 'lucide-react';
 
-// --- Performance-Optimized Project Gallery ---
 const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen: boolean, onClose: () => void }) => {
   const [index, setIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [isHighContrast, setIsHighContrast] = useState(false);
 
-  const next = () => { setIndex((prev) => (prev + 1) % images.length); setIsZoomed(false); };
-  const prev = () => { setIndex((prev) => (prev - 1 + images.length) % images.length); setIsZoomed(false); };
+  // --- Keyboard Support & Accessibility ---
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen) return;
+      if (e.key === 'Escape') handleClose();
+      if (!isZoomed) {
+        if (e.key === 'ArrowRight') next();
+        if (e.key === 'ArrowLeft') prev();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isZoomed, index]);
+
+  const handleClose = () => {
+    setIsZoomed(false);
+    setIndex(0);
+    onClose();
+  };
+
+  const next = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prev = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          // PERF FIX: Solid background with hardware acceleration to prevent blocking
-          className={`fixed inset-0 z-[500] flex flex-col items-center justify-center overflow-hidden transition-colors duration-200 ${
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className={`fixed inset-0 z-[600] flex flex-col items-center justify-center overflow-hidden transition-colors duration-300 ${
             isHighContrast ? 'bg-black' : 'bg-[#030303]/fb' 
           }`}
           style={{ transform: 'translateZ(0)' }}
         >
-          <div className="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-[510]">
-             <div className="flex items-center gap-6 text-white/40 text-xs font-mono">{index + 1} / {images.length}</div>
+          {/* Top UI Layer */}
+          <div className="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-[800]">
+             <div className="flex items-center gap-6 text-white/40 text-xs font-mono">
+                {index + 1} / {images.length}
+             </div>
              <div className="flex items-center gap-4">
-                <button onClick={() => setIsHighContrast(!isHighContrast)} className="text-indigo-400 p-2 hover:scale-110 transition-transform"><Contrast size={18} /></button>
-                <button onClick={() => setIsZoomed(!isZoomed)} className="text-indigo-400 p-2 hover:scale-110 transition-transform">{isZoomed ? <Minimize2 size={22}/> : <Maximize2 size={22}/>}</button>
-                <button onClick={onClose} className="text-white p-2 hover:bg-white/10 rounded-full transition-colors"><X size={24}/></button>
+                <button onClick={() => setIsHighContrast(!isHighContrast)} className="text-indigo-400 p-2"><Contrast size={18} /></button>
+                <button onClick={() => setIsZoomed(!isZoomed)} className="text-indigo-400 p-2">
+                  {isZoomed ? <Minimize2 size={22}/> : <Maximize2 size={22}/>}
+                </button>
+                <button onClick={handleClose} className="text-white p-2 hover:bg-white/10 rounded-full transition-colors"><X size={24}/></button>
              </div>
           </div>
 
-          <div className={`w-full h-full flex items-center justify-center ${isZoomed ? 'overflow-y-auto pt-20' : ''}`}>
-            {!isZoomed && (
-              <>
-                <button onClick={prev} className="fixed left-8 top-1/2 -translate-y-1/2 p-4 text-white/20 hover:text-white z-[510]"><ChevronLeft size={60} strokeWidth={1} /></button>
-                <button onClick={next} className="fixed right-8 top-1/2 -translate-y-1/2 p-4 text-white/20 hover:text-white z-[510]"><ChevronRight size={60} strokeWidth={1} /></button>
-              </>
-            )}
+          {/* Navigation Layer - Higher Z-Index than Image */}
+          {!isZoomed && images.length > 1 && (
+            <div className="absolute inset-0 flex items-center justify-between px-4 sm:px-8 pointer-events-none z-[750]">
+              <button
+                onClick={prev}
+                className="pointer-events-auto p-4 text-white/20 hover:text-white transition-all transform hover:scale-110"
+              >
+                <ChevronLeft size={60} strokeWidth={1} />
+              </button>
+              <button
+                onClick={next}
+                className="pointer-events-auto p-4 text-white/20 hover:text-white transition-all transform hover:scale-110"
+              >
+                <ChevronRight size={60} strokeWidth={1} />
+              </button>
+            </div>
+          )}
+
+          {/* Main Content Area */}
+          <div
+            className={`w-full h-full flex items-center justify-center cursor-pointer ${isZoomed ? 'overflow-auto py-20' : ''}`}
+            onClick={() => setIsZoomed(!isZoomed)}
+          >
             <motion.div
-              animate={{ scale: isZoomed ? 0.9 : 1 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              key={index}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{
+                opacity: 1,
+                scale: isZoomed ? 1.15 : 1
+              }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
               className="will-change-transform flex items-center justify-center"
             >
               <img
                 src={images[index]}
-                alt="UX Case Study Detail"
-                className={`rounded-xl shadow-2xl transition-all ${isZoomed ? 'w-[90vw] h-auto cursor-zoom-out' : 'max-h-[80vh] object-contain cursor-zoom-in'}`}
+                alt="UX Artifact"
+                className={`rounded-xl shadow-2xl transition-all duration-300 ${
+                  isZoomed ? 'w-[92vw] h-auto cursor-zoom-out' : 'max-h-[80vh] w-auto object-contain cursor-zoom-in'
+                }`}
+                onClick={(e) => isZoomed && e.stopPropagation()} // Allow scrolling when zoomed
               />
             </motion.div>
           </div>
@@ -55,82 +111,3 @@ const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen:
     </AnimatePresence>
   );
 };
-
-const projects = [
-  {
-    title: "YouTube Music Shuffle",
-    description: "Improving accessibility for the offline shuffle feature.",
-    images: ["/youtube_shuffle_all.jpg", "/youtube_shuffle_all_casestudy.png"],
-    tech: ["UX Research", "Accessibility"]
-  },
-  {
-    title: "Diabetic-Safe Bakery",
-    description: "Designing an end-to-end accessible ordering system.",
-    images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"],
-    tech: ["UI Design", "WCAG 2.1"]
-  },
-  {
-    title: "Crunchyroll Redesign",
-    description: "Streamlining discovery to reduce cognitive load.",
-    images: ["/crunchyroll_redesign.png", "/crunchyroll_redesign_casestudy.jpg"],
-    tech: ["IA", "User Testing"]
-  }
-];
-
-const Projects = () => {
-  const [selected, setSelected] = useState<null | any>(null);
-
-  return (
-    <div className="py-32 px-6 max-w-7xl mx-auto min-h-screen">
-      <div className="mb-24">
-        <h2 className="text-5xl md:text-7xl font-serif tracking-tight text-white mb-6">
-          Recent <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500">W</span>ork.
-        </h2>
-        <div className="h-1 w-20 bg-indigo-500 mb-8 rounded-full" />
-        <p className="text-white/50 text-lg font-light italic">
-          Case studies built on the principles of the Google UX Design Professional Certificate.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {projects.map((p, i) => (
-          <div
-            key={i}
-            className="group relative bg-white/5 p-8 rounded-[2.5rem] border border-white/5 hover:bg-white/[0.08] transition-all duration-500 transform-gpu will-change-transform"
-          >
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-8 bg-slate-900 relative">
-                {/* INP FIX: transform-gpu offloads the transition work from the CPU */}
-                <img
-                  src={p.images[0]}
-                  loading="lazy"
-                  alt={p.title}
-                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700 transform-gpu will-change-[opacity,transform]"
-                />
-
-                {/* INP FIX: Dedicated button layer for faster click response */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelected(p);
-                  }}
-                  className="absolute inset-0 z-20 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  <div className="bg-white text-black px-6 py-3 rounded-full flex items-center gap-2 font-bold text-xs uppercase tracking-widest shadow-xl pointer-events-none">
-                    <ZoomIn size={16} /> View Study
-                  </div>
-                </button>
-            </div>
-
-            <h3 className="text-2xl font-bold mb-3">{p.title}</h3>
-            <div className="flex gap-2 flex-wrap">
-                {p.tech.map(t => <span key={t} className="text-[10px] uppercase tracking-tighter text-indigo-400 font-bold border border-white/10 px-3 py-1 rounded-full">{t}</span>)}
-            </div>
-          </div>
-        ))}
-      </div>
-      <ProjectGallery images={selected?.images || []} isOpen={!!selected} onClose={() => setSelected(null)} />
-    </div>
-  );
-};
-
-export default Projects;
