@@ -30,7 +30,7 @@ const projects = [
       solution: "Simplified IA by categorizing shows into mood-based tiers.",
       impact: "Streamlined the average user journey by 15 seconds."
     },
-    images: ["/crunchyroll_redesign.png", "/crunchyroll_redesign_casestudy.jpg"],
+    images: ["/crunchyroll_redesign.jpg", "/crunchyroll_redesign_casestudy.jpg"],
     tech: ["IA", "User Testing"]
   }
 ];
