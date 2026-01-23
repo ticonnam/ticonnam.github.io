@@ -16,8 +16,8 @@ const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen:
       {isOpen && (
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          // PERF: Using a high-performance background instead of heavy backdrop-blur to fix the 224ms lag.
-          className={`fixed inset-0 z-[500] flex flex-col items-center justify-center overflow-hidden transition-colors ${
+          // PERF FIX: Solid background with hardware acceleration to prevent blocking
+          className={`fixed inset-0 z-[500] flex flex-col items-center justify-center overflow-hidden transition-colors duration-200 ${
             isHighContrast ? 'bg-black' : 'bg-[#030303]/fb' 
           }`}
           style={{ transform: 'translateZ(0)' }}
@@ -40,7 +40,7 @@ const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen:
             )}
             <motion.div
               animate={{ scale: isZoomed ? 0.9 : 1 }}
-              transition={{ duration: 0.2, ease: "easeOut" }} // Fast transition for better INP
+              transition={{ duration: 0.2, ease: "easeOut" }}
               className="will-change-transform flex items-center justify-center"
             >
               <img
@@ -56,24 +56,23 @@ const ProjectGallery = ({ images, isOpen, onClose }: { images: string[], isOpen:
   );
 };
 
-// --- Updated Project Data with New Image Filenames ---
 const projects = [
   {
     title: "YouTube Music Shuffle",
     description: "Improving accessibility for the offline shuffle feature.",
-    images: ["/youtube_shuffle_all.jpg", "/youtube_shuffle_all_casestudy.png"], // Matches your new small files
+    images: ["/youtube_shuffle_all.jpg", "/youtube_shuffle_all_casestudy.png"],
     tech: ["UX Research", "Accessibility"]
   },
   {
     title: "Diabetic-Safe Bakery",
     description: "Designing an end-to-end accessible ordering system.",
-    images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"], // Matches your new small files
+    images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"],
     tech: ["UI Design", "WCAG 2.1"]
   },
   {
     title: "Crunchyroll Redesign",
     description: "Streamlining discovery to reduce cognitive load.",
-    images: ["/crunchyroll_redesign.png", "/crunchyroll_redesign_casestudy.jpg"], // Matches your new names
+    images: ["/crunchyroll_redesign.png", "/crunchyroll_redesign_casestudy.jpg"],
     tech: ["IA", "User Testing"]
   }
 ];
@@ -95,27 +94,38 @@ const Projects = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {projects.map((p, i) => (
-          <motion.div
+          <div
             key={i}
-            onClick={() => setSelected(p)}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} // PERF: Only animate once to reduce scroll lag
-            className="cursor-pointer group relative bg-white/5 p-8 rounded-[2.5rem] border border-white/5 hover:bg-white/[0.08] transition-all duration-500 will-change-transform"
+            className="group relative bg-white/5 p-8 rounded-[2.5rem] border border-white/5 hover:bg-white/[0.08] transition-all duration-500 transform-gpu will-change-transform"
           >
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-8 bg-slate-900">
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-8 bg-slate-900 relative">
+                {/* INP FIX: transform-gpu offloads the transition work from the CPU */}
                 <img
                   src={p.images[0]}
-                  loading="lazy" // PERF: Lazy load project thumbnails
+                  loading="lazy"
                   alt={p.title}
-                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700"
+                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700 transform-gpu will-change-[opacity,transform]"
                 />
+
+                {/* INP FIX: Dedicated button layer for faster click response */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelected(p);
+                  }}
+                  className="absolute inset-0 z-20 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <div className="bg-white text-black px-6 py-3 rounded-full flex items-center gap-2 font-bold text-xs uppercase tracking-widest shadow-xl pointer-events-none">
+                    <ZoomIn size={16} /> View Study
+                  </div>
+                </button>
             </div>
+
             <h3 className="text-2xl font-bold mb-3">{p.title}</h3>
             <div className="flex gap-2 flex-wrap">
                 {p.tech.map(t => <span key={t} className="text-[10px] uppercase tracking-tighter text-indigo-400 font-bold border border-white/10 px-3 py-1 rounded-full">{t}</span>)}
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
       <ProjectGallery images={selected?.images || []} isOpen={!!selected} onClose={() => setSelected(null)} />
