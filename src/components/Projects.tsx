@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 const projects = [
+  const projects = [
   {
     title: "YouTube Music Shuffle",
     readme: {
@@ -28,6 +29,18 @@ const projects = [
     },
     images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"],
     tech: ["UI Design", "WCAG 2.1"],
+  },
+  {
+    title: "Crunchyroll Redesign",
+    readme: {
+      problem:
+        "Information overload caused high bounce rates on the anime discovery page.",
+    },
+    images: [
+      "/crunchyroll_redesign.jpg",
+      "/crunchyroll_redesign_casestudy.jpg",
+    ],
+    tech: ["IA", "User Testing"],
   },
 ];
 
