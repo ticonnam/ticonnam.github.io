@@ -14,13 +14,13 @@ const projects = [
     title: "YouTube Music Shuffle",
     problem:
       "Users struggled to find the shuffle feature within the complex library navigation.",
-    images: ["/youtube_shuffle_all.jpg", "/youtube_shuffle_all_casestudy.png"],
+    images: ["/youtube_shuffle_all.jpg", "/youtube-shuffle-all_casestudy.jpg"],
   },
   {
     title: "Diabetic-Safe Bakery",
     problem:
       "People with dietary restrictions often lack clear nutritional labeling during checkout.",
-    images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"],
+    images: ["/diabetic_bakery.jpg", "/diabetic-bakery_casestudy.jpg"],
   },
   {
     title: "Crunchyroll Redesign",
@@ -28,7 +28,7 @@ const projects = [
       "Information overload caused high bounce rates on the anime discovery page.",
     images: [
       "/crunchyroll_redesign.jpg",
-      "/crunchyroll_redesign_casestudy.jpg",
+      "/crunchyroll-redesign_casestudy.jpg",
     ],
   },
 ];
