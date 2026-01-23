@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X, MessageSquare, ShieldCheck, Sparkles } from 'lucide-react';
-import { }
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // --- SECURITY: System Instructions (Prompt Guardrails) ---
 // This acts as the "Shield" to prevent jailbreaking and off-topic discussions.
