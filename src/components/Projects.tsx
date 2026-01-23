@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown,
@@ -8,10 +8,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Maximize2,
+  Contrast,
 } from "lucide-react";
 
 const projects = [
-  const projects = [
   {
     title: "YouTube Music Shuffle",
     readme: {
@@ -55,19 +55,21 @@ export default function Projects() {
 
   return (
     <div className="py-24 px-6 max-w-7xl mx-auto min-h-screen">
-      <h2 className="text-5xl font-serif text-white mb-12">Case Studies</h2>
+      <h2 className="text-5xl font-serif text-white mb-16">
+        Case <span className="text-indigo-400 italic">Studies</span>
+      </h2>
 
-      <div className="grid md:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {projects.map((p, i) => (
           <motion.div
             key={i}
             layout
-            className="rounded-[2.5rem] bg-white/[0.04] border border-white/10 overflow-hidden"
+            className="flex flex-col max-h-[460px] bg-white/[0.04] border border-white/10 rounded-[2.5rem] overflow-hidden"
           >
             <div className="p-8">
-              {/* HERO IMAGE */}
+              {/* IMAGE PREVIEW */}
               <div
-                className="aspect-video rounded-2xl overflow-hidden mb-6 relative group cursor-zoom-in"
+                className="aspect-video max-h-[220px] rounded-2xl overflow-hidden mb-6 bg-slate-900 border border-white/5 relative group cursor-zoom-in"
                 onClick={() => setZoomImg({ projectIdx: i, imgIdx: 0 })}
               >
                 <img
@@ -85,7 +87,7 @@ export default function Projects() {
                 onClick={() =>
                   setExpandedIndex(expandedIndex === i ? null : i)
                 }
-                className="flex items-center gap-2 text-indigo-400"
+                className="flex items-center gap-2 text-indigo-400 text-sm font-semibold"
               >
                 View Research <ChevronDown />
               </button>
@@ -97,18 +99,25 @@ export default function Projects() {
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  className="px-8 pb-8 text-white/70"
+                  className="px-8 pb-8 text-white/60 border-t border-white/10 bg-black/40"
                 >
+                  <div className="flex items-center gap-2 text-indigo-400 uppercase tracking-widest text-[10px] mb-3 font-bold">
+                    <Target size={14} /> Problem
+                  </div>
                   <p className="mb-6">{p.readme.problem}</p>
 
-                  <div className="flex gap-4 overflow-x-auto">
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 mb-3 font-bold">
+                    Click to zoom artifacts
+                  </p>
+
+                  <div className="flex gap-4 overflow-x-auto pb-2">
                     {p.images.map((img, idx) => (
                       <div
                         key={idx}
                         onClick={() =>
                           setZoomImg({ projectIdx: i, imgIdx: idx })
                         }
-                        className="min-w-[160px] h-24 rounded-xl overflow-hidden cursor-zoom-in relative"
+                        className="relative min-w-[160px] h-24 rounded-xl overflow-hidden cursor-zoom-in border border-white/10"
                       >
                         <img
                           src={img}
@@ -127,7 +136,7 @@ export default function Projects() {
         ))}
       </div>
 
-      {/* ✅ ZOOM MODAL — THIS WAS MISSING */}
+      {/* ZOOM MODAL */}
       <ZoomModal
         zoomImg={zoomImg}
         setZoomImg={setZoomImg}
@@ -137,9 +146,7 @@ export default function Projects() {
   );
 }
 
-/* -------------------------------- */
-/* ZOOM MODAL */
-/* -------------------------------- */
+/* ---------------- ZOOM MODAL ---------------- */
 
 function ZoomModal({
   zoomImg,
@@ -150,19 +157,21 @@ function ZoomModal({
   setZoomImg: (v: ZoomState | null) => void;
   projects: typeof projects;
 }) {
-  const [scale, setScale] = useState(1);
+  const [isZoomed, setIsZoomed] = useState(false);
 
-  const clamp = (v: number) => Math.min(Math.max(v, 1), 3);
+  useEffect(() => {
+    if (!zoomImg) setIsZoomed(false);
+  }, [zoomImg]);
 
   if (!zoomImg) return null;
 
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl flex items-center justify-center"
       >
         {/* OVERLAY */}
         <div
@@ -175,21 +184,64 @@ function ZoomModal({
           className="relative z-10"
           onClick={(e) => e.stopPropagation()}
         >
+          {/* CLOSE */}
           <button
             onClick={() => setZoomImg(null)}
-            className="absolute top-6 right-6 text-white"
+            className="absolute top-6 right-6 text-white/40 hover:text-white"
           >
             <X size={36} />
           </button>
 
+          {/* ZOOM TOGGLE */}
+          <button
+            onClick={() => setIsZoomed(!isZoomed)}
+            className="absolute top-6 left-6 text-white/40 hover:text-white"
+          >
+            <Contrast size={20} />
+          </button>
+
+          {/* NAV */}
+          <button
+            onClick={() => {
+              const p = projects[zoomImg.projectIdx];
+              setZoomImg({
+                ...zoomImg,
+                imgIdx:
+                  (zoomImg.imgIdx - 1 + p.images.length) %
+                  p.images.length,
+              });
+            }}
+            className="absolute left-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white"
+          >
+            <ChevronLeft size={60} />
+          </button>
+
+          <button
+            onClick={() => {
+              const p = projects[zoomImg.projectIdx];
+              setZoomImg({
+                ...zoomImg,
+                imgIdx:
+                  (zoomImg.imgIdx + 1) % p.images.length,
+              });
+            }}
+            className="absolute right-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white"
+          >
+            <ChevronRight size={60} />
+          </button>
+
+          {/* IMAGE */}
           <motion.img
+            key={zoomImg.imgIdx}
             src={projects[zoomImg.projectIdx].images[zoomImg.imgIdx]}
-            onWheel={(e) =>
-              setScale((s) => clamp(s - e.deltaY * 0.001))
-            }
-            onClick={() => setScale(scale > 1 ? 1 : 2)}
-            animate={{ scale }}
-            className="max-w-[85vw] max-h-[85vh] object-contain rounded-2xl cursor-zoom-in"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{
+              opacity: 1,
+              scale: isZoomed ? 1.1 : 1,
+            }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 140, damping: 20 }}
+            className="max-w-[85vw] max-h-[85vh] rounded-2xl shadow-2xl object-contain cursor-zoom-in"
           />
         </div>
       </motion.div>
