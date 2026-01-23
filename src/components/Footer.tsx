@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
           {/* Column 2: Navigation Hub */}
           <div className="flex flex-col gap-4">
             <p className="text-xs font-bold text-white uppercase tracking-widest mb-2">Explore</p>
-            {['Work', 'About', 'Contact'].map((item) => (
+            {['Projects', 'About', 'Contact'].map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
             <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-full">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">
-                UX/UI Design Certificate
+                UXPeak UX/UI Design Mastery Certificate
               </span>
             </div>
 
