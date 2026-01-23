@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2, ArrowRight } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
 
-// --- Simplified High-Performance Gallery ---
 const ProjectGallery = ({ project, isOpen, onClose }: { project: any, isOpen: boolean, onClose: () => void }) => {
   const [index, setIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -14,64 +12,55 @@ const ProjectGallery = ({ project, isOpen, onClose }: { project: any, isOpen: bo
     return () => window.removeEventListener('keydown', handleEsc);
   }, [isOpen, onClose]);
 
-  if (!project) return null;
+  if (!isOpen || !project) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          // PERF: Fixed position outside the card flow prevents layout shift lag
-          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 md:p-12"
-        >
-          <div className="relative w-full max-w-6xl h-full flex flex-col bg-[#050505] rounded-3xl border border-white/5 overflow-hidden shadow-2xl">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 transition-opacity duration-200">
+      <div className="relative w-full max-w-5xl h-[90vh] bg-[#050505] rounded-3xl border border-white/10 overflow-hidden flex flex-col shadow-2xl">
 
-            {/* Minimal Header */}
-            <div className="p-6 flex justify-between items-center border-b border-white/5">
-              <h3 className="text-white font-bold">{project.title}</h3>
-              <div className="flex items-center gap-4">
-                <button onClick={() => setIsZoomed(!isZoomed)} className="text-indigo-400 hover:text-white transition-colors">
-                  {isZoomed ? <Minimize2 size={20}/> : <Maximize2 size={20}/>}
-                </button>
-                <button onClick={onClose} className="p-2 bg-white/5 rounded-full hover:bg-white/10 transition-all text-white">
-                  <X size={20}/>
-                </button>
-              </div>
-            </div>
-
-            {/* Artifact Container */}
-            <div className={`flex-1 overflow-y-auto p-4 md:p-8 flex flex-col items-center ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}>
-              <img
-                src={project.images[index]}
-                alt="Case Study Detail"
-                className={`rounded-lg transition-all duration-300 shadow-2xl ${isZoomed ? 'w-full' : 'max-h-[75vh] object-contain'}`}
-                onClick={() => setIsZoomed(!isZoomed)}
-              />
-
-              {project.images.length > 1 && (
-                <div className="flex gap-8 py-10">
-                  <button onClick={() => setIndex((prev) => (prev - 1 + project.images.length) % project.images.length)} className="text-white/40 hover:text-white flex items-center gap-2 text-xs uppercase tracking-widest font-bold">
-                    <ChevronLeft size={16}/> Prev
-                  </button>
-                  <button onClick={() => setIndex((prev) => (prev + 1) % project.images.length)} className="text-indigo-400 hover:text-indigo-300 flex items-center gap-2 text-xs uppercase tracking-widest font-bold">
-                    Next <ChevronRight size={16}/>
-                  </button>
-                </div>
-              )}
-            </div>
+        {/* Sleek Header */}
+        <div className="p-4 flex justify-between items-center border-b border-white/5 bg-black/40">
+          <span className="text-white/40 font-mono text-[10px] uppercase tracking-widest">{index + 1} / {project.images.length}</span>
+          <div className="flex items-center gap-3">
+            <button onClick={() => setIsZoomed(!isZoomed)} className="text-indigo-400 hover:text-white p-2">
+              {isZoomed ? <Minimize2 size={18}/> : <Maximize2 size={18}/>}
+            </button>
+            <button onClick={onClose} className="p-2 bg-white/5 rounded-full hover:bg-red-500/20 text-white transition-all">
+              <X size={18}/>
+            </button>
           </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className={`flex-1 overflow-y-auto p-4 md:p-10 flex flex-col items-center ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}>
+          <img
+            key={project.images[index]}
+            src={project.images[index]}
+            alt="Case Study"
+            className={`rounded-lg transition-transform duration-300 shadow-2xl ${isZoomed ? 'w-full scale-110' : 'max-h-[70vh] object-contain'}`}
+            style={{ willChange: 'transform' }} // Pre-optimizes for GPU
+            onClick={() => setIsZoomed(!isZoomed)}
+          />
+
+          {project.images.length > 1 && (
+            <div className="flex gap-10 py-10 mt-auto">
+              <button onClick={() => setIndex((prev) => (prev - 1 + project.images.length) % project.images.length)} className="text-white/30 hover:text-white flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
+                <ChevronLeft size={16}/> Prev
+              </button>
+              <button onClick={() => setIndex((prev) => (prev + 1) % project.images.length)} className="text-indigo-400 hover:text-indigo-300 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
+                Next <ChevronRight size={16}/>
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
 const projects = [
-  { title: "YouTube Music Shuffle", images: ["/youtube_shuffle_all.jpg", "/youtube_shuffle_all_casestudy.png"], tech: ["UX", "Accessibility"] },
-  { title: "Diabetic-Safe Bakery", images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"], tech: ["UI", "WCAG 2.1"] },
+  { title: "YouTube Music Shuffle", images: ["/youtube_shuffle_all.jpg", "/youtube_shuffle_all_casestudy.png"], tech: ["UX Research", "Accessibility"] },
+  { title: "Diabetic-Safe Bakery", images: ["/diabetic_bakery.jpg", "/diabetic_bakery_casestudy.jpg"], tech: ["UI Design", "WCAG 2.1"] },
   { title: "Crunchyroll Redesign", images: ["/crunchyroll_redesign.png", "/crunchyroll_redesign_casestudy.jpg"], tech: ["IA", "Research"] }
 ];
 
@@ -79,31 +68,28 @@ const Projects = () => {
   const [selected, setSelected] = useState<null | any>(null);
 
   return (
-    <div className="py-24 px-6 max-w-7xl mx-auto">
+    <div className="py-24 px-6 max-w-6xl mx-auto">
       <div className="mb-16">
-        <h2 className="text-4xl md:text-6xl font-serif text-white mb-4 italic">Case Studies.</h2>
-        <div className="h-1 w-12 bg-indigo-500 rounded-full" />
+        <h2 className="text-4xl md:text-5xl font-serif text-white italic">Case Studies.</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {projects.map((p, i) => (
           <div
             key={i}
             onClick={() => setSelected(p)}
-            className="group cursor-pointer space-y-6 bg-white/[0.02] border border-white/5 p-6 rounded-[2rem] hover:bg-white/[0.05] transition-all duration-300"
+            className="group cursor-pointer bg-white/[0.03] border border-white/5 p-6 rounded-[2rem] hover:bg-white/[0.07] transition-all duration-300"
           >
-            <div className="aspect-video rounded-2xl overflow-hidden bg-slate-900">
+            <div className="aspect-video rounded-xl overflow-hidden bg-slate-900 border border-white/5 mb-6">
                 <img
                   src={p.images[0]}
                   loading="lazy"
-                  className="w-full h-full object-cover opacity-50 group-hover:opacity-100 transition-all duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover opacity-50 group-hover:opacity-100 transition-all duration-500 transform-gpu"
                 />
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">{p.title}</h3>
-              <div className="flex gap-2 mt-3">
-                {p.tech.map(t => <span key={t} className="text-[9px] uppercase tracking-tighter text-indigo-400 border border-indigo-400/20 px-2 py-0.5 rounded-full">{t}</span>)}
-              </div>
+            <h3 className="text-xl font-bold text-white group-hover:text-indigo-400 transition-colors">{p.title}</h3>
+            <div className="flex gap-2 mt-3">
+              {p.tech.map(t => <span key={t} className="text-[9px] uppercase tracking-tighter text-indigo-400 font-bold border border-indigo-500/10 px-2 py-0.5 rounded-full">{t}</span>)}
             </div>
           </div>
         ))}
