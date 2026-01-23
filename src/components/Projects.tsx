@@ -58,9 +58,9 @@ const Projects = () => {
 
   return (
     <div className="py-24 px-6 max-w-7xl mx-auto min-h-screen">
-      <div className="mb-16">
-        <h2 className="text-4xl md:text-6xl font-serif text-white mb-4 italic">Case <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Studies.</span></h2>
-        <div className="h-1 w-20 bg-indigo-500 rounded-full" />
+      <div className="mb-16 text-center md:text-left">
+        <h2 className="text-4xl md:text-6xl font-serif text-white mb-4 italic">Case Studies.</h2>
+        <div className="h-1 w-20 bg-indigo-500 rounded-full mx-auto md:mx-0" />
       </div>
 
       {/* 3-Column Grid */}
@@ -107,7 +107,7 @@ const Projects = () => {
                   className="px-8 pb-10 border-t border-white/5 pt-8 bg-black/40"
                 >
                   <div className="space-y-8">
-                    <div className="grid grid-cols-1 gap-6">
+                    <div className="grid grid-cols-1 gap-4">
                       <div className="p-4 rounded-xl bg-white/5 border border-white/5">
                         <div className="flex items-center gap-2 text-indigo-400 mb-2 font-bold text-[10px] uppercase tracking-widest"><Target size={14}/> Problem</div>
                         <p className="text-white/50 text-xs leading-relaxed">{p.readme.problem}</p>
@@ -147,30 +147,38 @@ const Projects = () => {
         ))}
       </div>
 
-      {/* God Tier 85% Zoom Overlay */}
+      {/* --- Fixed 85% Zoom Overlay --- */}
       <AnimatePresence>
         {zoomImg && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-2xl flex items-center justify-center"
+            // High z-index to stay above nav and chat buttons
+            className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-2xl flex items-center justify-center"
             onClick={() => setZoomImg(null)}
           >
-            <button className="absolute top-10 right-10 text-white/40 hover:text-white transition-colors">
-              <X size={32}/>
+            {/* Clickable Close Button with stopPropagation */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setZoomImg(null);
+              }}
+              className="absolute top-10 right-10 text-white/40 hover:text-white transition-all p-4 z-[100000] cursor-pointer"
+            >
+              <X size={40} strokeWidth={1.5} />
             </button>
 
-            {/* Navigation Arrows for Zoom */}
+            {/* Navigation Arrows */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 const p = projects[zoomImg.projectIdx];
                 setZoomImg({ ...zoomImg, imgIdx: (zoomImg.imgIdx - 1 + p.images.length) % p.images.length });
               }}
-              className="absolute left-8 p-4 text-white/20 hover:text-white"
+              className="absolute left-8 p-4 text-white/20 hover:text-white z-[100000] cursor-pointer"
             >
-              <ChevronLeft size={48} strokeWidth={1}/>
+              <ChevronLeft size={60} strokeWidth={1}/>
             </button>
 
             <button
@@ -179,9 +187,9 @@ const Projects = () => {
                 const p = projects[zoomImg.projectIdx];
                 setZoomImg({ ...zoomImg, imgIdx: (zoomImg.imgIdx + 1) % p.images.length });
               }}
-              className="absolute right-8 p-4 text-white/20 hover:text-white"
+              className="absolute right-8 p-4 text-white/20 hover:text-white z-[100000] cursor-pointer"
             >
-              <ChevronRight size={48} strokeWidth={1}/>
+              <ChevronRight size={60} strokeWidth={1}/>
             </button>
 
             <motion.div
@@ -189,12 +197,12 @@ const Projects = () => {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="w-[85vw] h-[85vh] flex items-center justify-center"
-              onClick={(e) => e.stopPropagation()}
+              className="w-[85vw] h-[85vh] flex items-center justify-center pointer-events-none"
             >
               <img
                 src={projects[zoomImg.projectIdx].images[zoomImg.imgIdx]}
-                className="max-w-full max-h-full rounded-2xl shadow-2xl border border-white/10 object-contain"
+                className="max-w-full max-h-full rounded-2xl shadow-2xl border border-white/10 object-contain pointer-events-auto"
+                onClick={(e) => e.stopPropagation()}
               />
             </motion.div>
           </motion.div>
