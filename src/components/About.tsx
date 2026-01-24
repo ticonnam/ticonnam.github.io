@@ -125,7 +125,7 @@ const About: React.FC = () => {
             <motion.a
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              href="/ticonna-mckinney-resume.pdf"
+              href="/ticonna_portfolio_resume.pdf"
               onClick={handleDownload}
               target="_blank"
               className="group w-full py-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-lg shadow-indigo-500/25"
