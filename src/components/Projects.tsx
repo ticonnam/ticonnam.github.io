@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Target, Lightbulb, ZoomIn, X, ChevronLeft, ChevronRight, Maximize2, MousePointer2, FileText, ExternalLink } from 'lucide-react';
+import { ChevronDown, Target, Lightbulb, ZoomIn, X, ChevronLeft, ChevronRight, Maximize2, MousePointer2, FileText } from 'lucide-react';
 
 const projects = [
   {
     title: "YouTube Music Shuffle",
     readme: {
-      [cite_start]problem: "Users struggled to find the shuffle feature within the complex library navigation[cite: 57, 60].",
-      [cite_start]solution: "Implemented a high-visibility 'Shuffle All' trigger at the top level of the library view[cite: 73].",
-      [cite_start]impact: "Reduced interaction steps from 4 clicks down to 1[cite: 70, 80]."
+      problem: "Users struggled to find the shuffle feature within the complex library navigation.",
+      solution: "Implemented a high-visibility 'Shuffle All' trigger at the top level of the library view.",
+      impact: "Reduced interaction steps from 4 clicks down to 1."
     },
     images: ["/youtube_thumbnail.jpg", "/youtube_wireframe.jpg"],
     pdfLink: "/youtube_music_shuffle_case_study.pdf",
@@ -17,9 +17,9 @@ const projects = [
   {
     title: "Diabetic-Safe Bakery",
     readme: {
-      [cite_start]problem: "People with dietary restrictions often lack clear nutritional labeling during checkout[cite: 35, 36].",
-      [cite_start]solution: "Created an e-commerce flow with mandatory, high-contrast glycemic indicators[cite: 44, 47].",
-      [cite_start]impact: "Increased user confidence ratings during prototype testing by 40%[cite: 52]."
+      problem: "People with dietary restrictions often lack clear nutritional labeling during checkout.",
+      solution: "Created an e-commerce flow with mandatory, high-contrast glycemic indicators.",
+      impact: "Increased user confidence ratings during prototype testing by 40%."
     },
     images: ["/diabetic_bakery_thumbnail.jpg", "/diabetic_bakery_wireframe.jpg"],
     pdfLink: "/diabetic_bakery_case_study.pdf",
@@ -28,9 +28,9 @@ const projects = [
   {
     title: "Crunchyroll Redesign",
     readme: {
-      [cite_start]problem: "Information overload caused high bounce rates on the anime discovery page[cite: 4, 7].",
-      [cite_start]solution: "Simplified IA by categorizing shows into mood-based tiers and reducing clutter[cite: 16, 21].",
-      [cite_start]impact: "Streamlined the average user journey to 'Start Watching' by 15 seconds[cite: 23, 28]."
+      problem: "Information overload caused high bounce rates on the anime discovery page.",
+      solution: "Simplified IA by categorizing shows into mood-based tiers and reducing clutter.",
+      impact: "Streamlined the average user journey to 'Start Watching' by 15 seconds."
     },
     images: ["/crunchyroll_redesign_thumbnail.jpg", "/crunchyroll_wireframe.jpg"],
     pdfLink: "/crunchyroll_homepage_redesign_case_study.pdf",
@@ -60,9 +60,12 @@ const Projects = () => {
 
   return (
     <div className="py-24 px-6 max-w-7xl mx-auto min-h-screen">
-      <div className="mb-20 text-center md:text-left">
-        <h2 className="text-5xl md:text-8xl font-serif text-white mb-6 italic tracking-tighter uppercase">Selected Work.</h2>
-        <div className="h-1.5 w-32 bg-indigo-500 rounded-full mx-auto md:mx-0" />
+      {/* Typography perfectly matched to Hero Section */}
+      <div className="mb-20">
+        <h2 className="text-4xl md:text-6xl font-serif text-white mb-4 italic text-center md:text-left">
+          Selected <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Work.</span>
+        </h2>
+        <div className="h-1 w-20 bg-indigo-500 rounded-full mx-auto md:mx-0" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
@@ -78,7 +81,7 @@ const Projects = () => {
               <h3 className="text-3xl font-bold text-white mb-4 tracking-tight uppercase italic">{p.title}</h3>
               <div className="flex flex-wrap gap-2 mb-8">
                 {p.tech.map(t => (
-                  <span key={t} className="text-[10px] uppercase tracking-[0.25em] text-indigo-400 border border-indigo-500/30 px-4 py-1.5 rounded-full font-bold bg-indigo-500/10">{t}</span>
+                  <span key={t} className="text-[10px] uppercase tracking-[0.25em] text-indigo-400 border border-indigo-400/30 px-4 py-1.5 rounded-full font-bold bg-indigo-500/10">{t}</span>
                 ))}
               </div>
 
@@ -113,24 +116,21 @@ const Projects = () => {
                   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="space-y-6 pb-4 overflow-hidden">
                     <div className="flex gap-4">
                       <Target className="text-indigo-500 shrink-0" size={20} />
-                      <p className="text-white/60 text-xs leading-relaxed">{p.readme.problem}</p>
+                      <p className="text-white/60 text-xs leading-relaxed font-medium">{p.readme.problem}</p>
                     </div>
                     <div className="flex gap-4">
                       <Lightbulb className="text-indigo-500 shrink-0" size={20} />
-                      <p className="text-white/60 text-xs leading-relaxed">{p.readme.solution}</p>
+                      <p className="text-white/60 text-xs leading-relaxed font-medium">{p.readme.solution}</p>
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            {/* Footer Buttons */}
-            <div className="px-10 pb-10 flex flex-col gap-3 mt-auto">
-              <button className="w-full py-5 rounded-2xl bg-white text-black font-black text-[11px] uppercase tracking-[0.3em] hover:bg-indigo-500 hover:text-white transition-all shadow-xl flex items-center justify-center gap-3">
-                Live Prototype <ExternalLink size={14} />
-              </button>
-              <a href={p.pdfLink} target="_blank" rel="noopener noreferrer" className="w-full py-4 rounded-2xl border border-white/10 text-white/30 font-bold text-[10px] uppercase tracking-[0.25em] hover:bg-white/5 hover:text-white transition-all flex items-center justify-center gap-3">
-                <FileText size={14} /> View Case Study PDF
+            {/* View Full PDF Primary Action */}
+            <div className="px-10 pb-10 mt-auto">
+              <a href={p.pdfLink} target="_blank" rel="noopener noreferrer" className="w-full py-5 rounded-2xl bg-white text-black font-black text-[11px] uppercase tracking-[0.3em] hover:bg-indigo-500 hover:text-white transition-all shadow-xl flex items-center justify-center gap-3 text-center">
+                <FileText size={16} /> Full Case Study PDF
               </a>
             </div>
           </motion.div>
