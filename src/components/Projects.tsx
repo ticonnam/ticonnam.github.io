@@ -10,7 +10,7 @@ const projects = [
       solution: "Implemented a high-visibility 'Shuffle All' trigger at the top level of the library view.",
       impact: "Reduced interaction steps from 4 clicks down to 1."
     },
-    images: ["/youtube_thumbnail.jpg", "/youtube_wireframe.jpg", "/youtube_music_shuffle_case_study.pdf"],
+    images: ["/youtube_thumbnail.jpg", "/youtube_wireframe.jpg", "/public/youtube_music_shuffle_case_study.pdf"],
     tech: ["UX Research", "Accessibility"]
   },
   {
@@ -20,7 +20,7 @@ const projects = [
       solution: "Created an e-commerce flow with mandatory, high-contrast glycemic indicators.",
       impact: "Increased user confidence ratings during prototype testing by 40%."
     },
-    images: ["/diabetic_bakery_thumbnail.jpg", "/diabetic_bakery_wireframe.jpg", "/diabetic_bakery_case_study.pdf"],
+    images: ["/diabetic_bakery_thumbnail.jpg", "/diabetic_bakery_wireframe.jpg", "/public/diabetic_bakery_case_study.pdf"],
     tech: ["UI Design", "WCAG 2.1"]
   },
   {
@@ -30,7 +30,7 @@ const projects = [
       solution: "Simplified IA by categorizing shows into mood-based tiers and reducing clutter.",
       impact: "Streamlined the average user journey to 'Start Watching' by 15 seconds."
     },
-    images: ["/crunchyroll_redesign_thumbnail.jpg","/crunchyroll_wireframe.jpg", "/crunchyroll_homepage_redesign_case_study.pdf"],
+    images: ["/crunchyroll_redesign_thumbnail.jpg","/crunchyroll_wireframe.jpg", "/public/crunchyroll_homepage_redesign_case_study.pdf"],
     tech: ["IA", "User Testing"]
   }
 ];
