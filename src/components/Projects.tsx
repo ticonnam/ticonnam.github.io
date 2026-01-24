@@ -1,40 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Target, Lightbulb, ZoomIn, X, ChevronLeft, ChevronRight, BookOpen, Maximize2 } from 'lucide-react';
+import { ChevronDown, Target, Lightbulb, ZoomIn, X, ChevronLeft, ChevronRight, Maximize2, MousePointer2, FileText, ExternalLink } from 'lucide-react';
 
 const projects = [
   {
     title: "YouTube Music Shuffle",
     readme: {
-      problem: "Users struggled to find the shuffle feature within the complex library navigation.",
-      solution: "Implemented a high-visibility 'Shuffle All' trigger at the top level of the library view.",
-      impact: "Reduced interaction steps from 4 clicks down to 1."
+      [cite_start]problem: "Users struggled to find the shuffle feature within the complex library navigation[cite: 57, 60].",
+      [cite_start]solution: "Implemented a high-visibility 'Shuffle All' trigger at the top level of the library view[cite: 73].",
+      [cite_start]impact: "Reduced interaction steps from 4 clicks down to 1[cite: 70, 80]."
     },
     images: ["/youtube_thumbnail.jpg", "/youtube_wireframe.jpg"],
-    pdfLink: ["/youtube_music_shuffle_case_study.pdf"],
-    tech: ["UX Research", "Accessibility"]
+    pdfLink: "/youtube_music_shuffle_case_study.pdf",
+    tech: ["UX Research", "Visibility"]
   },
   {
     title: "Diabetic-Safe Bakery",
     readme: {
-      problem: "People with dietary restrictions often lack clear nutritional labeling during checkout.",
-      solution: "Created an e-commerce flow with mandatory, high-contrast glycemic indicators.",
-      impact: "Increased user confidence ratings during prototype testing by 40%."
+      [cite_start]problem: "People with dietary restrictions often lack clear nutritional labeling during checkout[cite: 35, 36].",
+      [cite_start]solution: "Created an e-commerce flow with mandatory, high-contrast glycemic indicators[cite: 44, 47].",
+      [cite_start]impact: "Increased user confidence ratings during prototype testing by 40%[cite: 52]."
     },
     images: ["/diabetic_bakery_thumbnail.jpg", "/diabetic_bakery_wireframe.jpg"],
-    pdfLink: ["/diabetic_bakery_case_study.pdf"],
-    tech: ["UI Design", "WCAG 2.1"]
+    pdfLink: "/diabetic_bakery_case_study.pdf",
+    tech: ["Inclusive Design", "WCAG 2.1"]
   },
   {
     title: "Crunchyroll Redesign",
     readme: {
-      problem: "Information overload caused high bounce rates on the anime discovery page.",
-      solution: "Simplified IA by categorizing shows into mood-based tiers and reducing clutter.",
-      impact: "Streamlined the average user journey to 'Start Watching' by 15 seconds."
+      [cite_start]problem: "Information overload caused high bounce rates on the anime discovery page[cite: 4, 7].",
+      [cite_start]solution: "Simplified IA by categorizing shows into mood-based tiers and reducing clutter[cite: 16, 21].",
+      [cite_start]impact: "Streamlined the average user journey to 'Start Watching' by 15 seconds[cite: 23, 28]."
     },
-    images: ["/crunchyroll_redesign_thumbnail.jpg","/crunchyroll_wireframe.jpg"],
-    pdfLink: ["/crunchyroll_homepage_redesign_case_study.pdf"],
-    tech: ["IA", "User Testing"]
+    images: ["/crunchyroll_redesign_thumbnail.jpg", "/crunchyroll_wireframe.jpg"],
+    pdfLink: "/crunchyroll_homepage_redesign_case_study.pdf",
+    tech: ["IA", "Personalization"]
   }
 ];
 
@@ -60,138 +60,92 @@ const Projects = () => {
 
   return (
     <div className="py-24 px-6 max-w-7xl mx-auto min-h-screen">
-      <div className="mb-16">
-        <h2 className="text-4xl md:text-6xl font-serif text-white mb-4 italic text-center md:text-left">Case <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Studies.</span></h2>
-        <div className="h-1 w-20 bg-indigo-500 rounded-full mx-auto md:mx-0" />
+      <div className="mb-20 text-center md:text-left">
+        <h2 className="text-5xl md:text-8xl font-serif text-white mb-6 italic tracking-tighter uppercase">Selected Work.</h2>
+        <div className="h-1.5 w-32 bg-indigo-500 rounded-full mx-auto md:mx-0" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
         {projects.map((p, i) => (
           <motion.div
             key={i}
             layout
-            className={`flex flex-col border border-white/10 rounded-[2.5rem] overflow-hidden transition-colors duration-500 ${
+            className={`flex flex-col border border-white/10 rounded-[3.5rem] overflow-hidden transition-all duration-700 shadow-2xl group ${
               expandedIndex === i ? 'bg-white/[0.08] border-indigo-500/40' : 'bg-white/[0.02]'
             }`}
           >
-            <div className="p-8">
-              <div
-                className="aspect-video rounded-2xl overflow-hidden mb-6 bg-slate-900 border border-white/5 relative group cursor-zoom-in"
-                onClick={() => setZoomImg({ projectIdx: i, imgIdx: 0 })}
-              >
-                <img src={p.images[0]} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-500" />
-                <div className="absolute inset-0 bg-indigo-500/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                    <Maximize2 size={24} className="text-white" />
+            <div className="p-10">
+              <h3 className="text-3xl font-bold text-white mb-4 tracking-tight uppercase italic">{p.title}</h3>
+              <div className="flex flex-wrap gap-2 mb-8">
+                {p.tech.map(t => (
+                  <span key={t} className="text-[10px] uppercase tracking-[0.25em] text-indigo-400 border border-indigo-500/30 px-4 py-1.5 rounded-full font-bold bg-indigo-500/10">{t}</span>
+                ))}
+              </div>
+
+              {/* Multi-Image Scroll Area */}
+              <div className="rounded-[2.5rem] overflow-hidden border border-white/10 bg-black/60 h-[500px] relative mb-8 group/artifact">
+                <div className="absolute inset-0 overflow-y-auto custom-scrollbar scroll-smooth">
+                  {p.images.map((img, idx) => (
+                    <div key={idx} className="relative cursor-zoom-in" onClick={() => setZoomImg({ projectIdx: i, imgIdx: idx })}>
+                      <img src={img} className="w-full h-auto object-top grayscale hover:grayscale-0 transition-all duration-700 border-b border-white/5 last:border-0" />
+                      <div className="absolute inset-0 bg-indigo-500/20 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity">
+                         <Maximize2 size={32} className="text-white drop-shadow-2xl" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl px-6 py-3 rounded-full border border-white/10 flex items-center gap-2 pointer-events-none opacity-100 group-hover/artifact:opacity-0 transition-opacity">
+                  <MousePointer2 className="text-indigo-400 animate-pulse" size={12} />
+                  <span className="text-[9px] text-white font-bold uppercase tracking-widest">Scroll Process</span>
                 </div>
               </div>
 
-              <h3 className="text-2xl font-bold text-white mb-2">{p.title}</h3>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {p.tech.map(t => (
-                  <span key={t} className="text-[10px] uppercase text-indigo-400 border border-indigo-400/20 px-3 py-1 rounded-full font-bold">{t}</span>
-                ))}
-              </div>
               <button
                 onClick={() => setExpandedIndex(expandedIndex === i ? null : i)}
-                className="w-full py-4 rounded-xl bg-white/5 hover:bg-indigo-500/10 text-white/60 hover:text-indigo-400 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest transition-all"
+                className="w-full py-4 rounded-2xl bg-white/5 hover:bg-indigo-500/10 text-white/60 hover:text-indigo-400 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest transition-all mb-4"
               >
-                {expandedIndex === i ? 'Hide Details' : 'See Research'}
+                {expandedIndex === i ? 'Hide Brief' : 'Read Brief'}
                 <ChevronDown className={`transition-transform duration-300 ${expandedIndex === i ? 'rotate-180' : ''}`} size={16} />
               </button>
+
+              <AnimatePresence>
+                {expandedIndex === i && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="space-y-6 pb-4 overflow-hidden">
+                    <div className="flex gap-4">
+                      <Target className="text-indigo-500 shrink-0" size={20} />
+                      <p className="text-white/60 text-xs leading-relaxed">{p.readme.problem}</p>
+                    </div>
+                    <div className="flex gap-4">
+                      <Lightbulb className="text-indigo-500 shrink-0" size={20} />
+                      <p className="text-white/60 text-xs leading-relaxed">{p.readme.solution}</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            <AnimatePresence>
-              {expandedIndex === i && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="px-8 pb-10 border-t border-white/5 pt-8 bg-black/40"
-                >
-                  <div className="space-y-6">
-                    <div className="p-4 rounded-xl bg-white/5 border border-white/5 text-xs">
-                      <div className="flex items-center gap-2 text-indigo-400 mb-2 font-bold uppercase tracking-widest"><Target size={14}/> Problem</div>
-                      <p className="text-white/50">{p.readme.problem}</p>
-                    </div>
-
-                    <div className="pt-4">
-                       <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold mb-4">Click below to zoom artifacts</p>
-                       <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
-                         {p.images.map((img, idx) => (
-                           <div
-                            key={idx}
-                            onClick={() => setZoomImg({ projectIdx: i, imgIdx: idx })}
-                            className="relative group min-w-[180px] h-24 rounded-xl overflow-hidden border border-white/10 cursor-zoom-in flex-shrink-0"
-                           >
-                             <img src={img} className="w-full h-full object-cover" />
-                             <div className="absolute inset-0 bg-indigo-500/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                <ZoomIn size={18} className="text-white" />
-                             </div>
-                           </div>
-                         ))}
-                       </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Footer Buttons */}
+            <div className="px-10 pb-10 flex flex-col gap-3 mt-auto">
+              <button className="w-full py-5 rounded-2xl bg-white text-black font-black text-[11px] uppercase tracking-[0.3em] hover:bg-indigo-500 hover:text-white transition-all shadow-xl flex items-center justify-center gap-3">
+                Live Prototype <ExternalLink size={14} />
+              </button>
+              <a href={p.pdfLink} target="_blank" rel="noopener noreferrer" className="w-full py-4 rounded-2xl border border-white/10 text-white/30 font-bold text-[10px] uppercase tracking-[0.25em] hover:bg-white/5 hover:text-white transition-all flex items-center justify-center gap-3">
+                <FileText size={14} /> View Case Study PDF
+              </a>
+            </div>
           </motion.div>
         ))}
       </div>
 
+      {/* 85% Locked Zoom Modal */}
       <AnimatePresence>
         {zoomImg && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100000] bg-black/95 backdrop-blur-2xl flex items-center justify-center"
-            onClick={() => setZoomImg(null)}
-          >
-            {/* Clickable X Button - Fixes the unclickable issue */}
-            <button
-              onClick={(e) => { e.stopPropagation(); setZoomImg(null); }}
-              className="absolute top-10 right-10 text-white/40 hover:text-white transition-all p-4 z-[100001] cursor-pointer"
-            >
-              <X size={40} strokeWidth={1.5} />
-            </button>
-
-            {/* Navigation Controls */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                const p = projects[zoomImg.projectIdx];
-                setZoomImg({ ...zoomImg, imgIdx: (zoomImg.imgIdx - 1 + p.images.length) % p.images.length });
-              }}
-              className="absolute left-8 p-4 text-white/20 hover:text-white z-[100001] cursor-pointer"
-            >
-              <ChevronLeft size={60} strokeWidth={1}/>
-            </button>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                const p = projects[zoomImg.projectIdx];
-                setZoomImg({ ...zoomImg, imgIdx: (zoomImg.imgIdx + 1) % p.images.length });
-              }}
-              className="absolute right-8 p-4 text-white/20 hover:text-white z-[100001] cursor-pointer"
-            >
-              <ChevronRight size={60} strokeWidth={1}/>
-            </button>
-
-            {/* 85% Locked Viewport Scale */}
-            <motion.div
-              key={zoomImg.imgIdx}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="w-[85vw] h-[85vh] flex items-center justify-center pointer-events-none"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <img
-                src={projects[zoomImg.projectIdx].images[zoomImg.imgIdx]}
-                className="max-w-full max-h-full rounded-2xl shadow-2xl border border-white/10 object-contain pointer-events-auto"
-              />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100000] bg-black/95 backdrop-blur-2xl flex items-center justify-center" onClick={() => setZoomImg(null)}>
+            <button onClick={(e) => { e.stopPropagation(); setZoomImg(null); }} className="absolute top-10 right-10 text-white/40 hover:text-white p-4 z-[100001] cursor-pointer"><X size={40} strokeWidth={1.5} /></button>
+            <button onClick={(e) => { e.stopPropagation(); const p = projects[zoomImg.projectIdx]; setZoomImg({ ...zoomImg, imgIdx: (zoomImg.imgIdx - 1 + p.images.length) % p.images.length }); }} className="absolute left-8 p-4 text-white/20 hover:text-white z-[100001] cursor-pointer"><ChevronLeft size={60} strokeWidth={1}/></button>
+            <button onClick={(e) => { e.stopPropagation(); const p = projects[zoomImg.projectIdx]; setZoomImg({ ...zoomImg, imgIdx: (zoomImg.imgIdx + 1) % p.images.length }); }} className="absolute right-8 p-4 text-white/20 hover:text-white z-[100001] cursor-pointer"><ChevronRight size={60} strokeWidth={1}/></button>
+            <motion.div key={zoomImg.imgIdx} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} className="w-[85vw] h-[85vh] flex items-center justify-center pointer-events-none" onClick={(e) => e.stopPropagation()}>
+              <img src={projects[zoomImg.projectIdx].images[zoomImg.imgIdx]} className="max-w-full max-h-full rounded-2xl shadow-2xl border border-white/10 object-contain pointer-events-auto" />
             </motion.div>
           </motion.div>
         )}
