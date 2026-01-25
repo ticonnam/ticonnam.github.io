@@ -1,87 +1,82 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Linkedin, Mail } from 'lucide-react';
-import { SectionId } from '../types';
-import ticonnaPhoto from '/public/the_beautiful_ticonna.jpg';
+import { Sparkles, Mail, ArrowRight } from 'lucide-react';
+import { HERO_TITLE, HERO_SUBTITLE } from '../constants';
 
-const Hero: React.FC = () => {
+const Hero = () => {
   return (
-    <section
-      id={SectionId.HERO}
-      className="relative min-h-screen flex items-center justify-center pt-20"
-    >
-      <div className="container mx-auto px-6 max-w-6xl relative z-10">
-        <div className="flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-24">
+    <section className="relative pt-24 pb-12 px-6 overflow-hidden min-h-[85vh] flex items-center">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-          {/* Left Column: Copy */}
-          <div className="flex-1 text-center lg:text-left">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 inline-block"
-            >
-              <span className="py-1 px-3 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-indigo-300 uppercase tracking-widest">
-                Available for Junior UX Designer roles
-              </span>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight text-white"
-            >
-              Designing for <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-                People.
-              </span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-lg text-slate-400 max-w-xl mx-auto lg:mx-0 mb-10 font-light"
-            >
-              Hi, I'm Ticonna. A Junior UX Designer transforming complex problems into intuitive, user-friendly designs through research and empathy.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="flex justify-center lg:justify-start gap-4"
-            >
-              <a href="#work" className="px-8 py-4 bg-indigo-600 rounded-full font-bold text-white shadow-lg shadow-indigo-500/25 flex items-center gap-2 hover:bg-indigo-500 transition-all">
-                View My Work <ArrowRight size={18} />
-              </a>
-              <div className="flex gap-4">
-                <a href="https://linkedin.com/in/ticonna-mckinney-8580a6263" className="p-4 rounded-full bg-white/5 border border-white/10 text-slate-400 hover:text-white transition-all"><Linkedin size={20} /></a>
-                <a href="mailto:ticonnam@gmail.com" className="p-4 rounded-full bg-white/5 border border-white/10 text-slate-400 hover:text-white transition-all"><Mail size={20} /></a>
-              </div>
-            </motion.div>
+        {/* Left Side: Content */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="z-10 text-center lg:text-left"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-indigo-400 text-[10px] font-bold uppercase tracking-widest mb-6">
+            <Sparkles size={12} className="animate-pulse" /> Available for New Opportunities
           </div>
 
-          {/* Right Column: Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="flex-1 flex justify-center lg:justify-end"
-          >
-            <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-[450px] lg:h-[450px]">
-              <div className="absolute inset-0 bg-indigo-500/20 blur-[80px] rounded-full animate-pulse" />
-              <div className="relative w-full h-full rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl rotate-3">
-                <img
-                  src={ticonnaPhoto}
-                  alt="Ticonna Mckinney"
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
-            </div>
-          </motion.div>
+          <h1 className="text-4xl md:text-6xl font-serif text-white mb-6 italic leading-[1.1] tracking-tighter">
+            {HERO_TITLE.split(',')[0]}, <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 font-sans not-italic font-black">
+              {HERO_TITLE.split(',')[1]}
+            </span>
+          </h1>
 
-        </div>
+          <p className="text-white/60 text-base md:text-lg max-w-md mx-auto lg:mx-0 mb-10 leading-relaxed font-medium">
+            {HERO_SUBTITLE}
+          </p>
+
+          <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+            <a
+              href="mailto:ticonnam@gmail.com"
+              className="group relative inline-flex items-center gap-3 bg-indigo-600 text-white px-7 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.25em] hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20"
+            >
+              <Mail size={14} /> Let's Connect <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            </a>
+          </div>
+        </motion.div>
+
+        {/* Right Side: Straightened Rectangular Image & Pink-Purple Border */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1 }}
+          className="relative flex justify-center lg:justify-end"
+        >
+          {/* Straightened Rectangular Wrapper */}
+          <div className="relative group w-full max-w-[360px]">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              className="relative rounded-[3rem] overflow-hidden border-4 border-purple-500/80 shadow-[0_0_30px_rgba(168,85,247,0.3)] bg-slate-900"
+            >
+              <img
+                src="/the_beautiful_ticonna.jpg"
+                alt="Ticonna McKinney"
+                className="w-full h-auto aspect-[4/5] object-cover transition-all duration-700"
+              /> {/* Straightened and in full color */}
+
+              {/* Refined UI/UX Badge - Color Matched */}
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] bg-white border border-purple-100 p-4 rounded-2xl flex items-center justify-between shadow-2xl transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
+                <div className="flex flex-col">
+                  <span className="text-[8px] text-purple-600 font-black uppercase tracking-[0.2em]">Research-Driven</span>
+                  <span className="text-slate-900 text-[11px] font-black uppercase tracking-tight italic">UI/UX Designer</span>
+                </div>
+                <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center shrink-0 ml-2 shadow-lg">
+                   <Sparkles size={14} className="text-white" />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Soft Purple Glow Behind Image */}
+            <div className="absolute -inset-2 bg-purple-500/10 blur-2xl rounded-[3rem] -z-10 opacity-100" />
+          </div>
+        </motion.div>
+
       </div>
     </section>
   );
